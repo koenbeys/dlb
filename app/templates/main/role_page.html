@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{% from "common/form_macros.html" import render_field, render_submit_field %}
+<h1>Role page!</h1>
+
+<p>This page is accessible to authenticated admin user (users that have signed in).</p>
+
+<div class="col-md-6">
+    {{ wtf.quick_form(form) }}
+
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% block doc -%}
+<!DOCTYPE html>
+<html{% block html_attribs %}{% endblock html_attribs %}>
+{% block html %}
+  <head>
+    {%- block head %}
+    <title>{% block title %}{{title|default}}{% endblock title %}</title>
+
+    {%- block metas %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {%- endblock metas %}
+
+    {%- block styles %}
+    <!-- Bootstrap -->
+    <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
+    {%- endblock styles %}
+    {%- endblock head %}
+  </head>
+  <body{% block body_attribs %}{% endblock body_attribs %}>
+    {% block body -%}
+        {% block navbar -%}
+        <hr class="no-margins"/>
+        {%- endblock navbar %}
+
+
+
+        <div id="main-div" class="with-margins">
+        {# One-time system messages called Flash messages #}
+        {% block flash_messages -%}
+            {%- with messages = get_flashed_messages(with_categories=true) -%}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category=='error' %}
+                            {% set category='danger' %}
+                        {% endif %}
+                        <div class="alert alert-{{category}}">{{ message|safe }}</div>
+                    {% endfor %}
+                {% endif %}
+            {%- endwith %}
+        {%- endblock flash_messages %}
+
+        {% block main -%}{% block content -%}{%- endblock content%}{%- endblock main%}
+
+        </div>
+
+    {% block footer -%}
+    <br/>
+    <hr class="no-margins"/>
+    <div id="footer-div" class="clearfix with-margins">
+        <div class="pull-left">WL v0.01</div>
+        <div class="pull-right">&copy; 2016 wl</div>
+    </div>
+    {%- endblock footer %}
+
+    {% block scripts %}
+    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
+    {%- endblock scripts %}
+
+
+    {%- endblock body %}
+  </body>
+{% endblock html %}
+</html>
+{%- endblock doc %}
