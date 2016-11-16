@@ -1,6 +1,5 @@
 # This file starts the WSGI web application.
 # - Heroku starts gunicorn, which loads Procfile, which starts manage.py
-# - Developers can run it from the command line: python runserver.py
 
 import os
 from app import create_app
