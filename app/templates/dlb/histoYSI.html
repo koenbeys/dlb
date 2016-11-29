@@ -1,0 +1,388 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<!-- Datepicker -->
+<!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">-->
+<link href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" rel="stylesheet">
+<!--<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>-->
+<!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>-->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+<!-- Datepicker -->
+
+<!-- Excel export -->
+<link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light/all.min.css" />
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/jszip.min.js"></script>
+<!-- Excel export -->
+
+
+
+<form id="myform" method="post">
+    <body style="margin:20px auto" onload="initform()">
+        <div class="container">
+            <div class="row" style="background-color:#ffcc80">
+                <div class="col-xs-3">
+                          <u><strong>Physical parameter</strong></u>
+                </div>
+                <div class="col-xs-3">
+                    <label>Code:</label>
+                    <strong> {{ ostation.stationname }} </strong>
+                    <input type="hidden" class="form-control" id="code" name="code" value="{{ ostation.stationname}} ">
+                </div>
+                <div class="col-xs-6">
+                    <label>Location:</label>
+                    <strong>{{ ostation.stationdescription }}</strong>
+                </div>
+
+            </div>
+                <br/>
+            <div class="row" style="background-color:#e6f2ff">
+                <div class="col-sm-3">From:
+                    <div class="input-group date">
+                        <input type="text" id="dtfrom" name="dtfrom" class="form-control" value="{{ dtfrom }}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-3">To:
+                    <div class="input-group date">
+                        <input type="text" id="dtto" name="dtto" class="form-control" value="{{ dtto }}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <button type="button" class="btn btn-primary btn-lg" id="buttonRefresh"  onclick="mysubmit();">Refresh</button>
+                    <button id="exportButton" class="btn btn-success btn-lg"><span class="fa fa-file-excel-o"></span>Export to Excel</button>
+                </div>
+                <input type="hidden" class="form-control" id="stationid" name="stationid" value="{{ ostation.stationid }}">
+            </div>
+            <br/>
+
+            {% if lstHistory.count() > 0 %}
+            <div class="row">
+                <table id="myTable"  class="table table-bordered table-condensed table-striped table-hover" >
+                    <!--style="display:none;">-->
+                    <thead style="display:none;">
+                        <tr>
+                            <th>rec</th>
+                            <!--<th>gaugeExNumber</th>-->
+                            <!--<th>gaugeValue</th>-->
+                            <!--<th>gaugeTs</th>-->
+                            <!--<th>deltaT</th>-->
+                            <!--<th>hardwareNumberOld</th>-->
+                            <!--<th>hardwareNumberNew</th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in lstHistory %}
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        {{ item.recTs }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        {{ "%10.2f" % (item.gaugeValue)}}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        {{ item.hardwareNumberOld }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        {{ item.hardwareNumberNew }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        {{ item.comment }}
+                                    </div>
+                                </div>
+                            </td>
+                            <!--<td>{{ ostation.gaugeExNumber }} </td>-->
+                            <!--<td> {{ "%10.2f" % (item.gaugeValue)}}</td>-->
+                            <!--<td>{{ item.gaugeTs }}</td>-->
+                            <!--<td>{{ item.deltaT }}</td>-->
+                            <!--<td>{{ item.hardwareNumberOld }}</td>-->
+                            <!--<td>{{ item.hardwareNumberNew }}</td>-->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row">
+
+
+
+            <div class="row">
+
+
+
+
+                <table id="exportTable" class="table table-hover" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>recTs</th>
+                            <th>gaugeExNumber</th>
+                            <th>gaugeValue</th>
+                            <th>gaugeTs</th>
+                            <th>deltaT</th>
+                            <th>hardwareChanged</th>
+                            <th>hardwareNumberOld</th>
+                            <th>hardwareTsOld</th>
+                            <th>hardwareNumberNew</th>
+                            <th>hardwareTsNew</th>
+                            <th>hardwareCleaned</th>
+                            <th>hardwareCalibrated</th>
+                            <th>sectionCleaned</th>
+                            <th>comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in lstHistory %}
+                        <tr>
+                            <td>{{ item.recTs }}</td>
+                            <td>{{ ostation.gaugeExNumber }}</td>
+                            <td>{{ "%10.2f" % (item.gaugeValue) }}</td>
+                            <td>{{ item.gaugeTs }}</td>
+                                <td>{{ item.deltaT }}</td>
+                            <td>{{ item.hardwareChanged }}</td>
+                                <td>{{ item.hardwareNumberOld }}</td>
+                                <td>{{ item.hardwareTsOld }}</td>
+                                <td>{{ item.hardwareNumberNew }}</td>
+                                <td>{{ item.hardwareTsNew }}</td>
+                            <td>{{ item.hardwareCleaned }}</td>
+                            <td>{{ item.hardwareCalibrated }}</td>
+                            <td>{{ item.sectionCleaned }}</td>
+                            <td>{{ item.comment }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                </table>
+            </div>
+
+            {% else %}
+                No info
+            {% endif %}
+<!-- end of history group-->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            </div>
+        </div>
+    </body>
+</form>
+
+<style type="text/css">
+    .table-row{
+        cursor:pointer;
+    }
+</style>
+
+<script>
+$(document).ready(function($){
+    //alert("oo")
+    var oTable = $('#myTable').dataTable();
+    $('#myTable').on('click', 'tr', function() {
+        var oData = oTable.fnGetData(this);
+        //document.getElementById("username").value = oData[1];
+        //document.getElementById("userid").value = oData[0];
+        //document.getElementById("editbutton").removeAttribute('disabled')
+    });
+});
+</script>
+<script type="text/javascript">
+    jQuery(function ($) {
+        $("#exportButton").click(function () {
+            // parse the HTML table element having an id=exportTable
+            var dataSource = shield.DataSource.create({
+                data: "#exportTable",
+                schema: {
+                    type: "table",
+                    fields: {
+                        recTs: { type: String },
+                        gaugeExNumber: { type: String },
+                        gaugeValue: { type: String },
+                        gaugeTs: { type: String },
+                        deltaT: { type: String },
+                        hardwareChanged: { type: String },
+                        hardwareNumberOld: { type: String },
+                        hardwareTsOld: { type: String },
+                        hardwareNumberNew: { type: String },
+                        hardwareTsNew: { type: String },
+                        hardwareCleaned: { type: String },
+                        hardwareCalibrated: { type: String },
+                        sectionCleaned: { type: String },
+                        comment: { type: String }
+                    }
+                }
+            });
+
+            // when parsing is done, export the data to Excel
+            dataSource.read().then(function (data) {
+                new shield.exp.OOXMLWorkbook({
+                    author: "WL",
+                    worksheets: [
+                        {
+                            name: document.getElementById("code").value.trim(),
+                            rows: [
+                                {
+                                    cells: [
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "recTs"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "gaugeExNumber"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "gaugeValue"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "gaugeTs"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "deltaT"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "hardwareChanged"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "hardwareNumberOld"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "hardwareTsOld"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "hardwareNumberNew"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "hardwareTsNew"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "hardwareCleaned"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "hardwareCalibrated"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "sectionCleaned"
+                                        },
+                                        {
+                                            style: {
+                                                bold: true
+                                            },
+                                            type: String,
+                                            value: "comment"
+                                        }
+                                    ]
+                                }
+                            ].concat($.map(data, function(item) {
+                                return {
+                                    cells: [
+                                        { type: String, value: item.recTs },
+                                        { type: String, value: item.gaugeExNumber },
+                                        { type: String, value: item.gaugeValue },
+                                        { type: String, value: item.gaugeTs },
+                                        { type: String, value: item.deltaT },
+                                        { type: String, value: item.hardwareChanged },
+                                        { type: String, value: item.hardwareNumberOld },
+                                        { type: String, value: item.hardwareTsOld },
+                                        { type: String, value: item.hardwareNumberNew },
+                                        { type: String, value: item.hardwareTsNew },
+                                        { type: String, value: item.hardwareCleaned },
+                                        { type: String, value: item.hardwareCalibrated },
+                                        { type: String, value: item.sectionCleaned },
+                                        { type: String, value: item.comment }
+                                    ]
+                                };
+                            }))
+                        }
+                    ]
+                }).saveAs({
+                    fileName: document.getElementById("code").value.trim()
+                });
+            });
+        });
+    });
+</script>
+
+
+
+<script>
+    $('.input-group.date').datepicker({
+    format: "dd/mm/yyyy",
+    startDate: "01/01/2000",
+    endDate: "31/12/2050",
+    todayBtn: "linked",
+    autoclose: true,
+    todayHighlight: true
+    });
+</script>
+
+<script>
+function mysubmit(){
+
+        $("#myform").submit();
+}
+
+function initform() {
+
+
+}
+
+
+</script>
+
+{% endblock %}

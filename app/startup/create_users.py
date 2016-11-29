@@ -14,7 +14,7 @@ def create_users():
 
     role = Role.query.filter(Role.name == 'admin').first()
     if not role:
-        role = Role(name='admin', label=u'Admin', admin=True)
+        role = Role(name=u'admin', label=u'Admin')
         db.session.add(role)
     role = Role.query.filter(Role.name == 'admin').first()
 
@@ -33,8 +33,8 @@ def create_users():
     usersroles = UsersRoles.query.filter(UsersRoles.user_id == user.id and UsersRoles.role_id == role.id).first()
     if not usersroles:
         usersroles = UsersRoles(user_id=user.id,
-                                role_id=role.id,
-                                admin=True)
+                                role_id=role.id)
+
         db.session.add(usersroles)
     usersroles = UsersRoles.query.filter(UsersRoles.user_id == user.id and UsersRoles.role_id == role.id).first()
 

@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!--<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">-->
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
+<!--<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">-->
+<!--<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
+
+<style type="text/css">
+
+      div.row {
+        border: 0px solid;
+      }
+
+
+</style>
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" rel="stylesheet">
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+
+
+<form id="myform" method="post">
+    <body style="margin:20px auto" onload="initform()">
+        <div class="container">
+            {% if alert  %}
+                <div class="alert alert-info">
+                    <strong>Info!</strong> Some data are missing.
+                </div>
+            {% endif %}
+            <div class="row" style="background-color:#ffcc80">
+                <div class="col-xs-3">
+                          <u><strong>  Physical parameter </strong></u>
+                </div>
+                <div class="col-xs-3">
+                    <label>Code:</label>
+                    <strong> {{ ostation.stationname }} </strong>
+                </div>
+                <div class="col-xs-6">
+                    <label>Location:</label>
+                    <strong>{{ ostation.stationdescription }}</strong>
+                </div>
+                <p></p>
+            </div>
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="recDate">Date:</label>
+                                <div class="input-group date">
+                                    <input type="text" id="recDate" name="recDate" class="form-control" value="{{ dtfrom }}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="recTime">Time:</label>
+                                <div class='input-group datea'>
+                                    <input type="text" class="form-control" placeholder="hh:mm"  id="recTime" name="recTime">
+                                    <span class="input-group-addon">
+                                        <button type="button" onclick="set_recTime(); return false;">Now</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="observator">Observator:</label>
+                            <input type="text" class="form-control" placeholder="Who is there" id="observator" name="observator">
+                        </div>
+                    </div>
+                    <div class="row" style="background-color:#ebebe0">
+                        <div class="col-sm-3">
+                            <label><u>Gauge:</u></label>
+                        </div>
+                    </div>
+                    <div class="row" style="background-color:#ebebe0">
+                        <div class="col-sm-4">
+                            <label for="gaugeValue">Value:</label>
+                            <input type="text" class="form-control" placeholder="m TAW" id="gaugeValue" name="gaugeValue">
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="gaugeTime">Time:</label>
+                                <div class='input-group datea'>
+                                    <input type="text" class="form-control" placeholder="hh:mm"  id="gaugeTime" name="gaugeTime">
+                                    <span class="input-group-addon">
+                                        <button type="button" onclick="set_gaugeTime(); return false;">Now</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="gaugeCleaned"><br/>Cleaned</label>
+                            <input type="checkbox" class="custom-control-input" id="gaugeCleaned" name="gaugeCleaned">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label><u>Logger:</u></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="hardwareChanged">Changed</label>
+                            <input type="checkbox" class="custom-control-input" id="hardwareChanged" name="hardwareChanged">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="hardwareNumberOld">Old serial nb.</label>
+                            <input type="text" class="form-control" id="hardwareNumberOld" disabled name="hardwareNumberOld">
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="hardwareTimeOld">Time:</label>
+                                <div class='input-group datea'>
+                                    <input type="text" class="form-control" placeholder="hh:mm" disabled id="hardwareTimeOld" name="hardwareTimeOld">
+                                    <span class="input-group-addon">
+                                        <button type="button" onclick="set_hardwareTimeOld(); return false;">Now</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            &nbsp;
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="hardwareNumberNew">New serial nb.</label>
+                            <input type="text" class="form-control" id="hardwareNumberNew" disabled name="hardwareNumberNew">
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="hardwareTimeNew">Time:</label>
+                                <div class='input-group datea'>
+                                    <input type="text" class="form-control" disabled placeholder="hh:mm"  id="hardwareTimeNew" name="hardwareTimeNew">
+                                    <span class="input-group-addon">
+                                        <button type="button" onclick="set_hardwareTimeNew(); return false;">Now</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="hardwareCleaned">Cleaned</label>
+                            <input type="checkbox" class="custom-control-input" id="hardwareCleaned" name="hardwareCleaned">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="hardwareCalibrated">Calibrated</label>
+                            <input type="checkbox" class="custom-control-input" id="hardwareCalibrated" name="hardwareCalibrated">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="deltaT">Delta T</label>
+                            <input type="text" class="form-control" placeholder="seconds" id="deltaT" name="deltaT">
+
+                        </div>
+
+                    </div>
+                    <div class="row" style="background-color:#ebebe0">
+                        <div class="col-sm-3">
+                            <label><u>Section:</u></label>
+                        </div>
+                    </div>
+                    <div class="row" style="background-color:#ebebe0">
+
+                        <div class="col-sm-3">
+                            <label for="sectionCleaned">Cleaned</label>
+                            <input type="checkbox" class="custom-control-input" id="sectionCleaned" name="sectionCleaned">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label><u>Samples:</u></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="samplesCollected">Collected</label>
+                            <input type="checkbox" class="custom-control-input" id="samplesCollected" name="samplesCollected">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row">
+                         <label for="comment">Comment:</label>
+                        <textarea class="form-control" rows="5" placeholder="Enter your comments here?" id="comment" name="comment"></textarea>
+                    </div>
+                    <p>&nbsp;</p>
+                    <div class="row">
+                        <button type="button" class="btn btn-primary btn-lg col-sm-12" onclick="mysubmit();">Save</button>
+                    </div>
+                    <input type="text" class="form-control" id="stationid" name="stationid" value="{{ ostation.stationid }}">
+                    <input type="text" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="text" class="form-control" id="recTs" name="recTs">
+                    <input type="text" class="form-control" id="gaugeTs" name="gaugeTs">
+                    <input type="text" class="form-control" id="hardwareTsNew" name="hardwareTsNew">
+                    <input type="text" class="form-control" id="hardwareTsOld" name="hardwareTsOld">
+                    <!--<input type="text" class="form-control" id="stationExNumber" name="stationExNumber"  value="{{ ostation.stationExNumber }}">-->
+                </div>
+            </div>
+            <p>&nbsp;</p>
+            <div class="row">
+                <div class="alert alert-info">
+                    Previously logged informations
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+    </body>
+</form>
+
+
+<script>
+$(document).ready(function($){
+    //alert("oo")
+    $('#hardwareChanged').on('click', function() {
+        //alert("oo")
+        if (document.getElementById("hardwareChanged").checked == true){
+            document.getElementById("hardwareNumberOld").removeAttribute('disabled')
+            document.getElementById("hardwareNumberNew").removeAttribute('disabled')
+            document.getElementById("hardwareTimeOld").removeAttribute('disabled')
+            document.getElementById("hardwareTimeNew").removeAttribute('disabled')
+
+        }
+        else
+        {
+            document.getElementById("hardwareNumberOld").setAttribute('disabled', true)
+            document.getElementById("hardwareNumberNew").setAttribute('disabled', true)
+            document.getElementById("hardwareTimeOld").setAttribute('disabled', true)
+            document.getElementById("hardwareTimeNew").setAttribute('disabled', true)
+        }
+
+    });
+});
+</script>
+
+<script>
+function initform() {
+
+                set_recDate();
+                set_recTime();
+                //set_dataloggerTime();
+                //set_gaugeTime();
+                //document.getElementById("dataloggerValue").value = "-9999"
+                //document.getElementById("gaugeValue").value = "-9999"
+                //document.getElementById("deltaT").value = "-9999"
+}
+
+function set_recDate(){
+        $("#recDate").val( moment().format('DD/MM/YYYY') );
+        return false;
+}
+function set_recTime(){
+        $("#recTime").val( moment().format('HH:mm') );
+}
+function set_hardwareTimeOld(){
+    if (document.getElementById("hardwareChanged").checked == true){
+        $("#hardwareTimeOld").val( moment().format('HH:mm') );
+    }
+}
+function set_hardwareTimeNew(){
+    if (document.getElementById("hardwareChanged").checked == true){
+        $("#hardwareTimeNew").val( moment().format('HH:mm') );
+    }
+}
+function set_gaugeTime(){
+        $("#gaugeTime").val( moment().format('HH:mm') );
+}
+function mysubmit(){
+        //alert("aa");
+        if (document.getElementById('gaugeTime').value == "") {
+            document.getElementById("gaugeTime").value = document.getElementById("recTime").value
+        }
+
+        if (document.getElementById('hardwareTimeNew').value == "") {
+            document.getElementById("hardwareTimeNew").value = document.getElementById("recTime").value
+        }
+
+        if (document.getElementById('hardwareTimeOld').value == "") {
+            document.getElementById("hardwareTimeOld").value = document.getElementById("recTime").value
+        }
+
+        document.getElementById("gaugeTs").value = document.getElementById("recDate").value + " " + document.getElementById("gaugeTime").value
+
+        document.getElementById("recTs").value = document.getElementById("recDate").value + " " + document.getElementById("recTime").value
+
+        document.getElementById("hardwareTsNew").value = document.getElementById("recDate").value + " " + document.getElementById("hardwareTimeNew").value
+
+        document.getElementById("hardwareTsOld").value = document.getElementById("recDate").value + " " + document.getElementById("hardwareTimeOld").value
+
+        if (document.getElementById("deltaT").value == "") {
+            document.getElementById("deltaT").value = "-9999"
+            }
+        document.getElementById("deltaT").value = document.getElementById("deltaT").value.replace(",",".")
+
+        if (document.getElementById("gaugeValue").value == "") {
+            document.getElementById("gaugeValue").value = "-9999"
+            }
+        document.getElementById("gaugeValue").value = document.getElementById("gaugeValue").value.replace(",",".")
+
+        //if (document.getElementById("operator").value == "") {
+            //document.getElementById("operator").value = "me"
+          //  }
+
+
+        $("#myform").submit();
+}
+</script>
+<script>
+$(document).ready(function($){
+    $('#myform').submit(function() {
+        alert('submit');
+        return false; // return false to cancel form action
+    });
+});
+</script>
+
+<script>
+    $('.input-group.date').datepicker({
+    format: "dd/mm/yyyy",
+    startDate: "01/01/2000",
+    endDate: "31/12/2024",
+    todayBtn: "linked",
+    autoclose: true,
+    todayHighlight: true
+    });
+</script>
+
+{% endblock %}

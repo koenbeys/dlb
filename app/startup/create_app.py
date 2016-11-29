@@ -10,14 +10,10 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from app import app, db, manager
 
-
 from flask_user import UserManager, SQLAlchemyAdapter
 
-
 # zorgt ervoor dat model beschikbaar is van proj
-from app.proj import models
-
-
+from app.dlb import models
 
 def make_shell_context():
     return dict(app=app, db=db)
@@ -50,8 +46,9 @@ def create_app(config_name):
     migrate = Migrate(app, db)
     manager.add_command('db', MigrateCommand)
 
-    manager.add_command("runserver", Server(port=app.config['FLASK_SERVER_PORT']))
+    manager.add_command("runserver", Server(host=app.config['FLASK_SERVER_HOST'],port=app.config['FLASK_SERVER_PORT']))
     manager.add_command("shell", Shell(make_context=make_shell_context))
+
 
     # Setup Flask-Mail
     mail = Mail(app)
@@ -79,8 +76,28 @@ def create_app(config_name):
     # Load all blueprints with their manager commands, models and views
 
     from app.main import main
-
     app.register_blueprint(main)
+
+    from app.dlb import dlb as dlb_blueprint
+    app.register_blueprint(dlb_blueprint)
+
+
+    #create app directories if not exist
+    directory = app.config['DLB_UPLOAD_FOLDER']
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    directory = app.config['DLB_BACKUP_FOLDER']
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    directory = app.config['DLB_DOWNLOAD_FOLDER']
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    directory = app.config['DLB_ZRX_FOLDER']
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 
     return app

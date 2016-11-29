@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- come from http://tutorialsplane.com/bootstrap-make-table-row-clickable/ -->
+<!-- combined with http://www.codeproject.com/Tips/823490/Bootstrap-Table-With-Sorting-Searching-and-Paging -->
+
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<form id="myform" class="form-inline" method="post">
+    <body>
+        <div class="container">
+            {% if alert  %}
+                <div class="alert alert-info">
+                    <strong>Info!</strong> You must select a location.
+                </div>
+            {% else %}
+                <div class="row header" style="text-align:center;color:green">
+                    <h3>Select location...</h3>
+                </div>
+            {% endif %}
+            <table id="myTable" class="table table-bordered table-condensed table-striped table-hover" >
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Location (waterway)</th>
+                        <th style="display:none;">id</th>
+                        <th style="display:none;">HQ station</th>
+                        <th style="display:none;">YSI station</th>
+                        <th style="display:none;">CTD station</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for station in stationList %}
+                        <tr  class="table-row" data-href="{{ url_for('dlb.stationHQ_page', stationid=station.stationid) }}" >
+                            <td>{{ station.stationname }}</td>
+                            <td>{{ station.stationdescription }}</td>
+                            <td style="display:none;"> {{station.stationid }}</td>
+                            <td style="display:none;"> {{station.stationHQ }}</td>
+                            <td style="display:none;"> {{station.stationYSI }}</td>
+                            <td style="display:none;"> {{station.stationCTD }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="row">
+                <h3><u>Selected location</u></h3>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-3">
+                    <label for="code">Code:</label>
+                    <input type="text" class="form-control" id="code" name="code" disabled>
+                </div>
+                <div class="form-group col-sm-5">
+                    <label for="location">Location:</label>
+                    <input type="text" class="form-control" id="location" name="location" disabled>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-7">&nbsp;</div>
+                <div class="form-group col-sm-5">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary btn-lg" id="buttonHQ" disabled onclick="mysubmit('HQ');">HQ station</button>
+                        <button type="button" class="btn btn-primary btn-lg" id="buttonHQvalidation" disabled  onclick="mysubmit('histoHQ');">HQ validation</button>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="form-group col-sm-7">&nbsp;</div>
+                <div class="form-group col-sm-5">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary btn-lg" id="buttonYSI" disabled onclick="mysubmit('YSI');">Phys.Par. station</button>
+                        <button type="button" class="btn btn-primary btn-lg" id="buttonYSIvalidation" disabled onclick="mysubmit('histoYSI');">Phys.Par. validation</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="hidden" class="form-control" id="stationid" name="stationid">
+                <input type="hidden" class="form-control" id="op" name="op">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            </div>
+        </div>
+    </body>
+</form>
+<script>
+$(document).ready(function($){
+    //alert("oo")
+    var oTable = $('#myTable').dataTable();
+    $('#myTable').on('click', 'tr', function() {
+        var oData = oTable.fnGetData(this);
+        document.getElementById("stationid").value = oData[2];
+        document.getElementById("location").value = oData[1];
+        document.getElementById("code").value = oData[0];
+
+        if (oData[3] == "True"){
+            document.getElementById("buttonHQ").removeAttribute('disabled')
+            document.getElementById("buttonHQvalidation").removeAttribute('disabled')        }
+        else
+        {
+            document.getElementById("buttonHQ").setAttribute('disabled', true)
+            document.getElementById("buttonHQvalidation").setAttribute('disabled', true)
+        }
+        if (oData[4] == "True"){
+            document.getElementById("buttonYSI").removeAttribute('disabled')
+            document.getElementById("buttonYSIvalidation").removeAttribute('disabled')
+        }
+        else
+        {
+            document.getElementById("buttonYSI").setAttribute('disabled', true)
+            document.getElementById("buttonYSIvalidation").setAttribute('disabled', true)
+        }
+    });
+});
+</script>
+
+<script>function mysubmit(op){
+        //alert(op);
+        document.getElementById("op").value = op
+        $("#myform").submit();
+}
+</script>
+
+<style type="text/css">
+    .table-row{
+        cursor:pointer;
+    }
+</style>
+
+{% endblock %}

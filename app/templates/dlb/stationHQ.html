@@ -1,0 +1,481 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!--<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">-->
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
+<!--<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">-->
+<!--<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
+
+<style type="text/css">
+
+      div.row {
+        border: 0px solid;
+      }
+
+
+</style>
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" rel="stylesheet">
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+
+
+<form id="myform" method="post">
+    <body style="margin:20px auto" onload="initform()">
+        <div class="container">
+            {% if alert  %}
+                <div class="alert alert-info">
+                    <strong>Info!</strong> Some data are missing.
+                </div>
+            {% endif %}
+            <div class="row" style="background-color:#ffcc80">
+                <div class="col-xs-3">
+                          <u><strong>  H/Q station </strong></u>
+                </div>
+                <div class="col-xs-3">
+                    <label>Code:</label>
+                    <strong> {{ ostation.stationname }} </strong>
+                </div>
+                <div class="col-xs-6">
+                    <label>Location:</label>
+                    <strong>{{ ostation.stationdescription }}</strong>
+                </div>
+                <p></p>
+            </div>
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="recDate">Date:</label>
+                                <div class="input-group date">
+                                    <input type="text" id="recDate" name="recDate" class="form-control" value="{{ dtfrom }}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="recTime">Time:</label>
+                                <div class='input-group datea'>
+                                    <input type="text" class="form-control" placeholder="hh:mm"  id="recTime" name="recTime">
+                                    <span class="input-group-addon">
+                                        <button type="button" onclick="set_recTime(); return false;">Now</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="observator">Observator:</label>
+                            <input type="text" class="form-control" placeholder="Who is there" id="observator" name="observator">
+                        </div>
+                    </div>
+                    <div class="row" style="background-color:#ebebe0">
+                        <div class="col-sm-3">
+                            <label><u>Sensor:</u></label>
+                        </div>
+                    </div>
+                    <div class="row" style="background-color:#ebebe0">
+                        <div class="col-sm-4">
+                            <label for="sensorValue">value:</label>
+                            <input type="text" class="form-control" placeholder="m TAW" id="sensorValue" name="sensorValue">
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="sensorTime">Time:</label>
+                                <div class='input-group datea'>
+                                    <input type="text" class="form-control" placeholder="hh:mm"  id="sensorTime" name="sensorTime">
+                                    <span class="input-group-addon">
+                                        <button type="button" onclick="set_sensorTime(); return false;">Now</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="sensorCleaned"><br/>Cleaned</label>
+                            <input type="checkbox" class="custom-control-input" id="sensorCleaned" name="sensorCleaned">
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label><u>Gauge:</u></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label for="gaugeValue">value:</label>
+                            <input type="text" class="form-control" placeholder="m TAW" id="gaugeValue" name="gaugeValue">
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="gaugeTime">Time:</label>
+                                <div class='input-group datea'>
+                                    <input type="text" class="form-control" placeholder="hh:mm"  id="gaugeTime" name="gaugeTime">
+                                    <span class="input-group-addon">
+                                        <button type="button" onclick="set_gaugeTime(); return false;">Now</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="gaugeCleaned"><br/>Cleaned</label>
+                            <input type="checkbox" class="custom-control-input" id="gaugeCleaned" name="gaugeCleaned">
+                        </div>
+                    </div>
+
+                    <div class="row" style="background-color:#ebebe0">
+                        <div class="col-sm-3">
+                            <label><u>Datalogger:</u></label>
+                        </div>
+                    </div>
+                    <div class="row" style="background-color:#ebebe0">
+                        <div class="col-sm-3">
+                            <label for="hardwareReset">reset</label>
+                            <input type="checkbox" class="custom-control-input" id="hardwareReset" name="hardwareReset">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="hardwareConfigured">config</label>
+                            <input type="checkbox" class="custom-control-input" id="hardwareConfigured" name="hardwareConfigured">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="hardwareChanged">changed</label>
+                            <input type="checkbox" class="custom-control-input" id="hardwareChanged" name="hardwareChanged">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="hardwareCalibrated">calibrated</label>
+                            <input type="checkbox" class="custom-control-input" id="hardwareCalibrated" name="hardwareCalibrated">
+                        </div>
+                    </div>
+                    <div class="row" style="background-color:#ebebe0">
+                        <div class="col-sm-4">
+                            <label for="hardwareNumberOld">Serial nb. old</label>
+                            <input type="text" class="form-control" id="hardwareNumberOld" disabled name="hardwareNumberOld">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="hardwareNumberNew">Serial nb. new</label>
+                            <input type="text" class="form-control" id="hardwareNumberNew" disabled name="hardwareNumberNew">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="deltaT">Delta T</label>
+                            <input type="text" class="form-control" placeholder="seconds" id="deltaT" name="deltaT">
+                                                <br/>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label><u>Section:</u></label>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <label for="sectionCleaned">cleaned</label>
+                            <input type="checkbox" class="custom-control-input" id="sectionCleaned" name="sectionCleaned">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row">
+                         <label for="comment">Comment:</label>
+                        <textarea class="form-control" rows="5" placeholder="Enter your comments here?" id="comment" name="comment"></textarea>
+                    </div>
+                    <p>&nbsp;</p>
+                    <div class="row">
+                        <button type="button" class="btn btn-primary btn-lg col-sm-12" onclick="mysubmit();">Save</button>
+                    </div>
+                    <input type="text" class="form-control" id="stationid" name="stationid" value="{{ ostation.stationid }}">
+                    <input type="text" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="text" class="form-control" id="recTs" name="recTs">
+                    <input type="text" class="form-control" id="sensorTs" name="sensorTs">
+                    <input type="text" class="form-control" id="gaugeTs" name="gaugeTs">
+                    <!--<input type="text" class="form-control" id="stationExNumber" name="stationExNumber"  value="{{ ostation.stationExNumber }}">-->
+                </div>
+            </div>
+            <p>&nbsp;</p>
+            <div class="row">
+                <div class="alert alert-info">
+                    Previously logged informations
+                </div>
+            </div>
+
+<!-- begin of history group -->
+                {% if lstHistory.count() > 0 %}
+                {% for item in lstHistory %}
+                    {% if loop.index0 % 2 %}
+                        <div class="row" style="background-color:#e6f2ff">
+                    {% else %}
+                        <div class="row" style="background-color:#e6ffe6">
+                    {% endif %}
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label>Date</label>
+                                {{ item.recTs }}
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Observator</label>
+                                {{ item.observator }}
+                            </div>
+                        </div>
+
+                       <div class="row">
+                            <div class="col-sm-3">
+                                <label>Datalogger: value</label>
+                                {% if item.sensorValue > -9990 %}
+                                    {{ "%10.2f" % (item.sensorValue) }} mTAW
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-3">
+                                <label>time</label>
+                                {{ item.sensorTs }}
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label>cleaned</label>
+                                {% if item.sensorCleaned %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </div>
+                       </div>
+                       <div class="row">
+                            <div class="col-sm-3">
+                                <label>Gauge: value</label>
+                                {% if item.gaugeValue > -9990 %}
+                                    {{ "%10.2f" % (item.gaugeValue) }} mTAW
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-3">
+                                <label>time</label>
+                                {{ item.gaugeTs }}
+                            </div>
+                            <div class="col-sm-3">
+                                <label>cleaned</label>
+                                {% if item.gaugeCleaned %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </div>
+
+                            <div class="col-sm-3">
+                                {% if item.sensorValue > -9990 and item.gaugeValue > -9999 %}
+                                    <label>delta H</label>
+                                    {% if (item.sensorValue - item.gaugeValue) > 0.1 or (item.sensorValue - item.gaugeValue) < -0.1 %}
+                                        <font color="red"> <strong>{{"%10.3f" % (item.sensorValue - item.gaugeValue)  }}m </strong> </font>
+                                    {% else %}
+                                        {{ "%10.f" % (item.sensorValue - item.gaugeValue)  }}m
+                                    {% endif %}
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </div>
+                       </div>
+
+                       <div class="row">
+                            <div class="col-sm-3">
+                                <label>Sensor: reset</label>
+                                {% if item.hardwareReset == True %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-3">
+                                <label>configured</label>
+                                {% if item.hardwareConfig == True %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-3">
+                                <label>changed</label>
+                                {% if item.hardwareChanged == True %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label>calibrated</label>
+                                {% if item.hardwareCalibrated == True %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Delta T</label>
+                                {% if item.gaugeValue > -9990 %}
+                                    {% if item.deltaT > 5 %}
+                                        <font color="red"> <strong>{{ item.deltaT }} </strong> </font>
+                                    {% else %}
+                                        {{ "%5.0f" % (item.deltaT) }} s
+                                    {% endif %}
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </div>
+                       </div>
+                        {% if item.hardwareChanged == True %}
+                       <div class="row">
+                            <div class="col-sm-4">
+                                <label>Serial nb. old datalogger</label>
+                                {{ item.hardwareNumberOld }}
+                            </div>
+                            <div class="col-sm-4">
+                                <label>Serial nb. new datalogger</label>
+                                {{ item.hardwareNumberNew }}
+                            </div>
+                       </div>
+                        {% endif %}
+                       <div class="row">
+
+                            <div class="col-sm-3">
+                                <label>Section: Cleaned</label>
+                                {% if item.sectionCleaned == True %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </div>
+
+                       </div>
+                    </div>
+                    <div class="col-sm-3">
+                                 <label>Comment:</label>
+                        {{ item.comment }}
+
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                {% endfor %}
+            {% else %}
+                No info
+            {% endif %}
+<!-- end of history group-->
+
+
+
+            </div>
+        </div>
+
+    </body>
+</form>
+
+
+<script>
+$(document).ready(function($){
+    //alert("oo")
+    $('#hardwareChanged').on('click', function() {
+        //alert("oo")
+        if (document.getElementById("hardwareChanged").checked == true){
+            document.getElementById("hardwareNumberOld").removeAttribute('disabled')
+            document.getElementById("hardwareNumberNew").removeAttribute('disabled')
+        }
+        else
+        {
+            document.getElementById("hardwareNumberOld").setAttribute('disabled', true)
+            document.getElementById("hardwareNumberNew").setAttribute('disabled', true)
+        }
+
+    });
+});
+</script>
+
+<script>
+function initform() {
+
+                set_recDate();
+                set_recTime();
+                //set_dataloggerTime();
+                //set_gaugeTime();
+                //document.getElementById("dataloggerValue").value = "-9999"
+                //document.getElementById("gaugeValue").value = "-9999"
+                //document.getElementById("deltaT").value = "-9999"
+}
+
+function set_recDate(){
+        $("#recDate").val( moment().format('DD/MM/YYYY') );
+        return false;
+}
+function set_recTime(){
+        $("#recTime").val( moment().format('HH:mm') );
+}
+function set_sensorTime(){
+        $("#sensorTime").val( moment().format('HH:mm') );
+}
+function set_gaugeTime(){
+        $("#gaugeTime").val( moment().format('HH:mm') );
+}
+function mysubmit(){
+        //alert("aa");
+        if (document.getElementById('sensorTime').value == "") {
+            document.getElementById('sensorTime').value = document.getElementById('recTime').value
+        }
+
+        if (document.getElementById('gaugeTime').value == "") {
+            document.getElementById("gaugeTime").value = document.getElementById("recTime").value
+        }
+
+        document.getElementById("sensorTs").value = document.getElementById("recDate").value + " " + document.getElementById("sensorTime").value
+
+        document.getElementById("gaugeTs").value = document.getElementById("recDate").value + " " + document.getElementById("gaugeTime").value
+
+        document.getElementById("recTs").value = document.getElementById("recDate").value + " " + document.getElementById("recTime").value
+
+        if (document.getElementById("deltaT").value == "") {
+            document.getElementById("deltaT").value = "-9999"
+            }
+        document.getElementById("deltaT").value = document.getElementById("deltaT").value.replace(",",".")
+
+        if (document.getElementById("sensorValue").value == "") {
+            document.getElementById("sensorValue").value = "-9999"
+            }
+        document.getElementById("sensorValue").value = document.getElementById("sensorValue").value.replace(",",".")
+
+        if (document.getElementById("gaugeValue").value == "") {
+            document.getElementById("gaugeValue").value = "-9999"
+            }
+        document.getElementById("gaugeValue").value = document.getElementById("gaugeValue").value.replace(",",".")
+
+        //if (document.getElementById("operator").value == "") {
+            //document.getElementById("operator").value = "me"
+          //  }
+
+
+        $("#myform").submit();
+}
+</script>
+<script>
+$(document).ready(function($){
+    $('#myform').submit(function() {
+        alert('submit');
+        return false; // return false to cancel form action
+    });
+});
+</script>
+
+<script>
+    $('.input-group.date').datepicker({
+    format: "dd/mm/yyyy",
+    startDate: "01/01/2000",
+    endDate: "31/12/2024",
+    todayBtn: "linked",
+    autoclose: true,
+    todayHighlight: true
+    });
+</script>
+
+{% endblock %}

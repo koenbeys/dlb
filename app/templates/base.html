@@ -1,11 +1,11 @@
 {% extends "base_wl.html" %}
 
-{% block title %}Flasky{% endblock %}
+{% block title %}Enki{% endblock %}
 
 {% block head %}
 {{ super() }}
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 {% endblock %}
 
 {% block navbar %}
@@ -22,9 +22,11 @@
     </div>
     <div class="collapse navbar-collapse" id="example-navbar-collapse">
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Meetpost</a></li>
-            <li><a href="#">Oproep</a></li>
-
+            <!--<li class="active"><a href="#">Meetpost</a></li>-->
+            <!--<li><a href="{{ url_for('dlb.oproep_page') }}">Oproep</a></li>-->
+            <li><a href="{{ url_for('dlb.stationlist_page') }}">Digital logbook</a></li>
+            <li><a href="{{ url_for('dlb.uploadfile_page') }}">Upload file</a></li>
+            <li><a href="{{ url_for('dlb.test_page') }}">Test page</a></li>
 
         </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -35,12 +37,11 @@
                                 <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('user.profile') }}">User Profile</a></li>
-                            <li><a href="{{ url_for('user.register') }}">Registreer User</a></li>
-                            <li><a href="{{ url_for('main.role_page') }}">Rollen</a></li>
+                            <li><a href="#">Users</a></li>
+                            <li><a href="#">Rollen</a></li>
                             <li><a href="#">UserList</a></li>
                             <li class="divider"></li>
-                            <li><a href="#">Toepassingen</a></li>
+                            <li><a href="#">Firma</a></li>
                             <li class="divider"></li>
                             <li><a href="#">global</a></li>
                         </ul>
@@ -54,9 +55,33 @@
                 {% endif %}
 
             </ul>
+
+
     </div>
 </div>
 {% endblock %}
+
+    <hr class="no-margins"/>
+
+    <div id="main-div" class="with-margins">
+    {# One-time system messages called Flash messages #}
+    {% block flash_messages %}
+        {%- with messages = get_flashed_messages(with_categories=true) -%}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category=='error' %}
+                        {% set category='danger' %}
+                    {% endif %}
+                    <div class="alert alert-{{category}}">{{ message|safe }}</div>
+                {% endfor %}
+            {% endif %}
+        {%- endwith %}
+    {% endblock %}
+
+    {% block mainl %}{% block content %}{% endblock %}{% endblock %}
+    </div>
+
+    <br/>
 
 {% block scripts %}
 {{ super() }}

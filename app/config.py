@@ -17,8 +17,10 @@ class Config:
 
     # Flask settings
     CSRF_ENABLED = True
-    FLASK_SERVER_PORT=5106
-
+    FLASK_SERVER_HOST = "127.0.0.1"
+#    FLASK_SERVER_PORT=5106
+#    FLASK_SERVER_HOST = "0.0.0.0"
+    FLASK_SERVER_PORT=80
 
     # Mail settings
     MAIL_USERNAME = None
@@ -41,7 +43,15 @@ class Config:
     USER_AFTER_LOGOUT_ENDPOINT = 'main.home_page'
 
 
+    DLB_UPLOAD_FOLDER = 'uploads/'
+    DLB_DOWNLOAD_FOLDER = 'downloads/'
+    DLB_BACKUP_FOLDER = 'backup/'
 
+    DLB_ZRX_FOLDER = 'zrx_files/'
+    DLB_ZRX_FILE_EXTENSION = 'zrx'
+    DLB_GAUGE_TO_ZRX = True
+    DLB_SENSOR_TO_ZRX = False
+    DLB_STATIONLIST_FILENAME = "stations.txt"
 
     @staticmethod
     def init_app(app):
