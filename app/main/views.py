@@ -52,3 +52,9 @@ def user_profile_page():
     # Process GET or invalid POST
     return render_template('main/user_profile_page.html',
                            form=form)
+
+@main.route('/info')
+def info_page():
+    print "info page"
+    print render_template('main/info.html')
+    return render_template('main/info.html')

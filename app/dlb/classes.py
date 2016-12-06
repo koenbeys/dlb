@@ -4,19 +4,53 @@ class stationItem:
     sensorExNumber = ""
     gaugeExNumber = ""
     stationdescription = ""
-    stationHQ = 1
-    stationYSI = 1
+    stationHQ = 0
+    stationYSI = 0
 
+from datetime import datetime
 class historyItemHQ:
     stationid = -1
-    date = ""
-    deltaT = 0
+    recTs = datetime(1900,1,1)
+    observator = ""
     operator = ""
-    dataloggerTime = ""
-    dataloggerValue = -9999
-    gaugeTime = ""
+    sensorTs = datetime(1900,1,1)
+    sensorValue = -9999
+    sensorTime = ""
+    gaugeTs = datetime(1900,1,1)
     gaugeValue = -9999
-    dataloggerCleaned = False
-    gaugeCleaned = False
-    sectionCleaned = False
+    gaugeTime = ""
+    sensorCleaned = ""
+    gaugeCleaned = ""
+    sectionCleaned = ""
     comment = ""
+    deltaT = -9999
+    hardwareChanged = False
+    hardwareNumberOld = ""
+    hardwareNumberNew = ""
+    hardwareReset = False
+    hardwareCalibrated = False
+    hardwareConfigured = False
+
+
+class historyItemYSI:
+    stationid = -1
+    recTs = datetime(1900,1,1)
+    observator = ""
+    operator = ""
+    gaugeTs = datetime(1900,1,1)
+    gaugeValue = -9999
+    gaugeTime = ""
+    gaugeCleaned = False
+    comment = ""
+    deltaT = -9999
+    hardwareChanged = False
+    hardwareNumberOld = ""
+    hardwareTsOld = ""
+    hardwareTimeOld = ""
+    hardwareNumberNew = ""
+    hardwareTsNew = ""
+    hardwareTimeNew = ""
+    hardwareCleaned = False
+    hardwareCalibrated = False
+    samplesCollected = False
+    sectionCleaned = False

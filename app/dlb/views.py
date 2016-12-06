@@ -1,18 +1,27 @@
-from flask import redirect, render_template, render_template_string, Blueprint,request,url_for
+from flask import redirect, render_template, request,url_for, flash
 from flask_user import login_required,current_user
-from app import main
-from .forms import TestForm, StationHQForm, StationYSIForm, StationListForm,histoHQForm
-from app import db, app
-from .functions import *
-from app.dlb import functions
-from app.config import config
 from . import dlb
+from .forms import StationListForm, TestForm, StationHQForm, StationYSIForm, histoHQForm, histoYSIForm
+
+from app import app,db
+from . import functions
+from app.config import config
+
+from datetime import datetime
+
+#.functions import getStationList
+# The Home page is accessible to anyone
 
 
+
+@dlb.route('/user')
+@login_required  # Limits access to authenticated users
+def user_page():
+    return render_template('main/user_page.html')
 
 @dlb.route('/oproep')
 def oproep_page():
-    return render_template('dlb/oproep.html')
+    return render_template('main/oproep.html')
 
 
 # app.config['UPLOAD_FOLDER'] = 'uploads/'
@@ -37,370 +46,268 @@ import os
 # Route that will process the file upload
 @dlb.route('/upload', methods=['POST'])
 def upload():
+    from flask import flash
     # Get the name of the uploaded file
     file = request.files['file']
     # Check if the file is one of the allowed types/extensions
-    if file and allowed_file(file.filename):
-        # Make the filename safe, remove unsupported chars
-        filename = file.filename
-        # Move the file form the temporal folder to
-        # the upload folder we setup
-        file.save(os.path.join(app.config['DLB_UPLOAD_FOLDER'], filename))
-        # Redirect the user to the uploaded_file route, which
-        # will basicaly show on the browser the uploaded file
-        print filename
-        return render_template('dlb/uploadfile.html', txt=filename)
-        #return redirect(url_for('dlb.test_page', txt=filename))
+    if (file.filename.lower() != ""):
+        if allowed_file(file.filename):
+            # Make the filename safe, remove unsupported chars
+            filename = file.filename
+            # Move the file form the temporal folder to
+            # the upload folder we setup
+            file.save(os.path.join(app.config['DLB_UPLOAD_FOLDER'], filename))
+            # Redirect the user to the uploaded_file route, which
+            # will basicaly show on the browser the uploaded file
+            functions.checkAndLoadFile(filename)
+                #flash('Wrong file')
+    #            file.save(os.path.join(app.config['DLB_TEMP_FOLDER'], filename))
 
-
-@dlb.route('/uploadfile', methods=['GET', 'POST'])
-def uploadfile_page():
-    txt = ""
-    return render_template('dlb/uploadfile.html', txt=txt)
-
-@dlb.route('/userList', methods=['GET', 'POST'])
-def userList_page():
-    form = userListForm(request.form)
-    if request.method == 'POST':
-        if form.validate():
-            print "Userlistform : ok"
-            userid1 = request.form.get('userid')
-            print userid1
-            if (int(userid1) > 0):
-            #user = functions.getUserDetail(userid)
-                return redirect(url_for('dlb.userdetail_page', userid = userid1))
-            else:
-                return redirect(url_for('dlb.newuser_page'))
+            return render_template('uploadFile.html')
         else:
-            print "Userlistform : not ok"
-            userList = functions.getUserList()
-            return render_template( 'dlb/userlist.html', tableList=userList, alert=True)
-
-    userList = functions.getUserList()
-    print "oooo"
-    return render_template('dlb/userList.html', tableList=userList, alert=False)
-
-@dlb.route('/newuser', methods=['GET', 'POST'])
-def newuser_page():
-    form = userdetailForm(request.form)
-    if request.method == 'POST':
-        if form.validate():
-            print "newuser : ok"
-            userid = request.form.get('userid')
-            newRoles = request.form.get('newRoles')
-            functions.setUserRoles(int(userid),newRoles)
-            print "roles updated"
-            first_name = request.form.get('first_name')
-            last_name = request.form.get('last_name')
-            email = request.form.get('email')
-            gsmnr = request.form.get('gsmnr')
-            active = request.form.get('active')
-            username = request.form.get('username')
-
-            inewuser = functions.setUser(int(userid),username,first_name,last_name,email,gsmnr,active)
-            functions.setUserRoles(int(inewuser),newRoles)
-            userList = functions.getUserList()
-            return render_template('dlb/userList.html', tableList=userList, alert=False)
-        else:
-            print "newuser : NOT ok"
-            print "newuser requets"
-            cuser = functions.getUserDetail(-1)
-            croles = functions.getUserRoles(-1)
-            return render_template('dlb/userdetail.html', cuser=cuser, croles = croles, alert=True)
+            flash("File not allowed to upload !")
+            return render_template('uploadFile.html')
+        #return redirect(url_for('main.test_page', txt=filename))
+    else:
+        print "no file selected"
+        flash("No file selected !")
+        return render_template('uploadFile.html')
 
 
-    print "newuser requets"
-    cuser = functions.getUserDetail(-1)
-    croles = functions.getUserRoles(-1)
-    return render_template('dlb/userdetail.html', cuser=cuser, croles = croles, alert=False)
+@dlb.route('/uploadFile', methods=['GET', 'POST'])
+def uploadFile_page():
+   return render_template('uploadFile.html')
 
 
 
-@dlb.route('/userdetail/<userid>', methods=['GET', 'POST'])
-def userdetail_page(userid):
-    form = userdetailForm(request.form)
-    if request.method == 'POST':
-        if form.validate():
-            print "userdetailForm : ok"
-            userid = request.form.get('userid')
-            newRoles = request.form.get('newRoles')
-            functions.setUserRoles(int(userid),newRoles)
-            print "roles updated"
-            first_name = request.form.get('first_name')
-            last_name = request.form.get('last_name')
-            email = request.form.get('email')
-            gsmnr = request.form.get('gsmnr')
-            active = request.form.get('active')
-            username = request.form.get('username')
-
-            functions.setUser(int(userid),username,first_name,last_name,email,gsmnr,active)
-            userList = functions.getUserList()
-            return render_template('dlb/userList.html', tableList=userList, alert=False)
-        else:
-            print "userdetailForm : NOT ok"
-            print "userdetail requets"
-            cuser = functions.getUserDetail(userid)
-            croles = functions.getUserRoles(userid)
-            return render_template('dlb/userdetail.html', cuser=cuser, croles = croles, alert=True)
-
-
-    print "userdetail requets"
-    cuser = functions.getUserDetail(userid)
-    croles = functions.getUserRoles(userid)
-    return render_template('dlb/userdetail.html', cuser=cuser, croles = croles, alert=False)
 
 
 @dlb.route('/stationlist', methods=['GET', 'POST'])
 def stationlist_page():
-    print "stationlist_page():"
+    from flask import session
+    from classes import stationItem
     form = StationListForm(request.form)
     if request.method == 'POST':
         if form.validate():
             print "StationListForm : ok"
             stationid = request.form.get('stationid')
+            session['stationid'] = stationid
             print stationid
             op = request.form.get('op')
             if (op == "HQ"):
-                #stationHQ_page(stationid)
-                # return stationHQ_page(stationid)
-                return redirect(url_for('dlb.stationHQ_page',stationid=stationid))
+                return redirect(url_for('.stationHQ_page',stationid=stationid))
             elif (op == "YSI"):
-                    #stationYSI_page(stationid)
-                    # return stationHQ_page(stationid)
-                return redirect(url_for('dlb.stationYSI_page', stationid=stationid))
+                return redirect(url_for('.stationYSI_page', stationid=stationid))
             elif (op == "histoHQ"):
-                    #stationCTD_page(stationid)
-                    # return stationHQ_page(stationid)
-                return redirect(url_for('dlb.histoHQ_page', stationid=stationid))
+                return redirect(url_for('.histoHQ_page', stationid=stationid))
             elif (op == "histoYSI"):
-                return redirect(url_for('dlb.histoYSI_page', stationid=stationid))
-                        #
-            # lst = functions.getStationInfo(stationid)
-            # lstHistory = functions.getHistoryHQs(stationid)
-            # return render_template('dlb/stationHQ.html', lst=lst, lstHistory = lstHistory)   #, ii = ii)
+                return redirect(url_for('.histoYSI_page', stationid=stationid))
         else:
             print "StationListForm : not ok"
             stationList = functions.getStationList()
-            return render_template( 'dlb/stationlist.html', stationList=stationList, alert=True)
+            return render_template( 'stationlist.html', stationList=stationList, alert=True)
 
     stationList = functions.getStationList()
-    functions.loadStationListFromFile()             #"c:\\temp\\stations.txt")
-    print stationList[1].stationid
-    return render_template('dlb/stationlist.html', stationList=stationList, alert=False)
+    functions.isObserver()
+    if 'stationid' not in session:
+        session['stationid']="-1"
+        station=stationItem()
+    else:
+        station = functions.getStationInfo(session['stationid'])
+
+    return render_template('stationlist.html', stationList=stationList, station=station, alert=False)
 
 
-from datetime import datetime
 
 @dlb.route('/histoHQ/<stationid>', methods=['GET', 'POST'])
 def histoHQ_page(stationid):
     print "histoHQ_page page..."
     form = histoHQForm(request.form)
-    if request.method == 'POST':
-        if form.validate():
-            print "histoHQ_page : ok"
-            stationid = request.form.get('stationid')
-            dtfrom = request.form.get('dtfrom')
-            dtto = request.form.get('dtto')
-            lstHistory = functions.getHistoryHQbyDates(stationid, dtfrom, dtto)
-            ostation = functions.getStationInfo(stationid)
-            return render_template('dlb/histoHQ.html', ostation=ostation, lstHistory=lstHistory, dtfrom=dtfrom, dtto=dtto,
-                                   alert=False)
+    if request.form.get('formname')=='histoHQ':
+        if request.method == 'POST':
+            if form.validate():
+                print "histoHQ_page : ok"
+                stationid = request.form.get('stationid')
+                dtfrom = request.form.get('dtfrom')
+                dtto = request.form.get('dtto')
+                lstHistory = functions.getHistoryHQbyDates(stationid, dtfrom, dtto)
+                ostation = functions.getStationInfo(stationid)
+                return render_template('histoHQ.html', ostation=ostation, lstHistory=lstHistory, dtfrom=dtfrom, dtto=dtto)
+            else:
+                print "histoHQ_page : NOT ok"
+                functions.flash_errors(form)
+                stationid = request.form.get('stationid')
 
-        else:
-            print "histoHQ_page : NOT ok"
-            stationid = request.form.get('stationid')
-
-    lstHistory = functions.getHistoryHQ(stationid, 20)
+    lstHistory = functions.getHistoryHQ(stationid, app.config['DLB_NB_HISTO_HISTORY_ITEMS'])
     ostation = functions.getStationInfo(stationid)
     dtfrom = ""
     dtto = ""
-    return render_template('dlb/histoHQ.html', ostation=ostation, lstHistory = lstHistory, dtfrom = dtfrom, dtto = dtto, alert=False)
+    return render_template('histoHQ.html', ostation=ostation, lstHistory = lstHistory, dtfrom = dtfrom, dtto = dtto)
 
 
 @dlb.route('/stationHQ/<stationid>', methods=['GET', 'POST'])
 def stationHQ_page(stationid):
+    from app import app, db
+    from .models import historyItemsHQs
+    from flask import  session
     print "stationHQ page..."
+
     form = StationHQForm(request.form)
-    if request.method == 'POST':
-        if form.validate():
-            print "StationHQForm : ok"
-            stationid = request.form.get('stationid')
-            #stationExNumber = request.form.get('stationExNumber')
-            recTs = request.form.get('recTs')
-            dtrecTs = datetime.strptime(recTs,'%d/%m/%Y %H:%M')
-            observator = request.form.get('observator')
-            sensorTs = request.form.get('sensorTs')
-            dtsensorTs = datetime.strptime(sensorTs,'%d/%m/%Y %H:%M')
-            sensorValue = request.form.get('sensorValue')
-            gaugeTs = request.form.get('gaugeTs')
-            dtgaugeTs = datetime.strptime(gaugeTs,'%d/%m/%Y %H:%M')
-            gaugeValue = request.form.get('gaugeValue')
-            sensorCleaned = request.form.get('sensorCleaned')
-            gaugeCleaned = request.form.get('gaugeCleaned')
-            sectionCleaned = request.form.get('sectionCleaned')
-            comment = request.form.get('comment')
-            deltaT =  request.form.get('deltaT')
+    if request.form.get('formname')=='stationHQ':
+        if request.method == 'POST':
+            if form.validate():
+                print "StationHQForm : ok"
+                histo = historyItemsHQs()
+                histo.stationid = request.form.get('stationid')
+                ostation = functions.getStationInfo(histo.stationid)
+                histo.sensorExNumber=ostation.sensorExNumber
+                histo.gaugeExNumber=ostation.gaugeExNumber
+                recTs = request.form.get('recTs')
+                histo.recTs = datetime.strptime(recTs, '%d/%m/%Y %H:%M')
+                histo.operator = "me"
+                histo.observator = request.form.get('observator')
+                if (histo.observator == ""):
+                    histo.observator = histo.operator
+                sensorTs = request.form.get('sensorTs')
+                histo.sensorTs = datetime.strptime(sensorTs, '%d/%m/%Y %H:%M')
+                histo.sensorValue = request.form.get('sensorValue')
+                gaugeTs = request.form.get('gaugeTs')
+                histo.gaugeTs = datetime.strptime(gaugeTs, '%d/%m/%Y %H:%M')
+                histo.gaugeValue = request.form.get('gaugeValue')
+                histo.sensorCleaned = request.form.get('sensorCleaned')
+                histo.gaugeCleaned = request.form.get('gaugeCleaned')
+                histo.sectionCleaned = request.form.get('sectionCleaned')
+                histo.comment = request.form.get('comment')
+                histo.deltaT = request.form.get('deltaT')
 
-            hardwareChanged = request.form.get('hardwareChanged')
-            hardwareNumberOld = request.form.get('hardwareNumberOld')
-            hardwareNumberNew = request.form.get('hardwareNumberNew')
-            hardwareReset = request.form.get('hardwareReset')
-            hardwareCalibrated = request.form.get('hardwareCalibrated')
-            hardwareConfigured = request.form.get('hardwareConfigured')
+                histo.hardwareChanged = request.form.get('hardwareChanged')
+                histo.hardwareNumberOld = request.form.get('hardwareNumberOld')
+                histo.hardwareNumberNew = request.form.get('hardwareNumberNew')
+                histo.hardwareReset = request.form.get('hardwareReset')
+                histo.hardwareCalibrated = request.form.get('hardwareCalibrated')
+                histo.hardwareConfigured = request.form.get('hardwareConfigured')
 
-            ostation = functions.getStationInfo(stationid)
-            operator = "me"
-            if (observator == ""):
-                observator = operator
+                db.session.add(histo)
+                db.session.commit()
+                flash("HQ logbook entry saved !", "success")
+                functions.saveToZrxFileHQ(histo)
+                print "historyItemsHQs inserted"
+                stationList = functions.getStationList()
+                station = functions.getStationInfo(session['stationid'])
 
-            from app import app, db
-            from app.main.models import historyItemsHQs
-            histo = historyItemsHQs(stationid=stationid,
-                                    sensorExNumber=ostation.sensorExNumber,
-                                    gaugeExNumber=ostation.gaugeExNumber,
-                                    recTs=dtrecTs,
-                                    deltaT=deltaT,
-                                    operator=operator,
-                                    observator=observator,
-                                    sensorTs=dtsensorTs,
-                                    sensorValue=sensorValue,
-                                    gaugeTs=dtgaugeTs,
-                                    gaugeValue=gaugeValue,
-                                    sensorCleaned=sensorCleaned,
-                                    gaugeCleaned=gaugeCleaned,
-                                    sectionCleaned=sectionCleaned,
-                                    hardwareChanged=hardwareChanged,
-                                    hardwareNumberOld=hardwareNumberOld,
-                                    hardwareNumberNew=hardwareNumberNew,
-                                    hardwareReset=hardwareReset,
-                                    hardwareConfigured=hardwareConfigured,
-                                    hardwareCalibrated=hardwareCalibrated,
-                                    comment=comment
-                                    )
+                return render_template('stationlist.html', stationList=stationList, station=station)
+            else:
+                print "StationHQForm : NOT ok"
+                functions.flash_errors(form)
+                ostation = functions.getStationInfo(stationid)
 
-            db.session.add(histo)
-            db.session.commit()
-            functions.saveToZrxFileHQ(histo)
-            print "historyItemsHQs inserted"
-            stationList = functions.getStationList()
+                lstHistory = functions.getHistoryHQ(stationid, app.config['DLB_NB_STATION_HISTORY_ITEMS'])
+                return render_template('stationHQ.html', ostation=ostation, lstHistory = lstHistory, form=form)
 
-            return render_template('dlb/stationlist.html', stationList=stationList, alert=False)
-        else:
-            print "StationHQForm : NOT ok"
-            ostation = functions.getStationInfo(stationid)
-            lstHistory = functions.getHistoryHQ(stationid, 5)
-            return render_template('dlb/stationHQ.html', ostation=ostation, lstHistory = lstHistory, alert=True)
-
-    lstHistory = functions.getHistoryHQ(stationid, 5)
+    lstHistory = functions.getHistoryHQ(stationid, app.config['DLB_NB_STATION_HISTORY_ITEMS'])
     ostation = functions.getStationInfo(stationid)
-    return render_template('dlb/stationHQ.html', ostation=ostation, lstHistory = lstHistory, alert=False)
+
+    return render_template('stationHQ.html', ostation=ostation, lstHistory = lstHistory, form=form)
 
 @dlb.route('/histoYSI/<stationid>', methods=['GET', 'POST'])
 def histoYSI_page(stationid):
     print "histoYSI_page page..."
     form = histoYSIForm(request.form)
-    if request.method == 'POST':
-        if form.validate():
-            print "histoYSI_page : ok"
-            stationid = request.form.get('stationid')
-            dtfrom = request.form.get('dtfrom')
-            dtto = request.form.get('dtto')
-            lstHistory = functions.getHistoryYSIbyDates(stationid, dtfrom, dtto)
-            ostation = functions.getStationInfo(stationid)
-            return render_template('dlb/histoYSI.html', ostation=ostation, lstHistory=lstHistory, dtfrom=dtfrom, dtto=dtto,
-                                   alert=False)
+    if request.form.get('formname')=='histoYSI':
+        if request.method == 'POST':
+            if form.validate():
+                print "histoYSI_page : ok"
+                stationid = request.form.get('stationid')
+                dtfrom = request.form.get('dtfrom')
+                dtto = request.form.get('dtto')
+                lstHistory = functions.getHistoryYSIbyDates(stationid, dtfrom, dtto)
+                ostation = functions.getStationInfo(stationid)
+                return render_template('histoYSI.html', ostation=ostation, lstHistory=lstHistory, dtfrom=dtfrom, dtto=dtto,
+                                       alert=False)
 
-        else:
-            print "histoUSI_page : NOT ok"
-            stationid = request.form.get('stationid')
+            else:
+                print "histoUSI_page : NOT ok"
+                stationid = request.form.get('stationid')
 
-    lstHistory = functions.getHistoryYSI(stationid, 20)
+    lstHistory = functions.getHistoryYSI(stationid, app.config['DLB_NB_HISTO_HISTORY_ITEMS'])
     ostation = functions.getStationInfo(stationid)
     dtfrom = ""
     dtto = ""
-    return render_template('dlb/histoYSI.html', ostation=ostation, lstHistory = lstHistory, dtfrom = dtfrom, dtto = dtto, alert=False)
+    return render_template('histoYSI.html', ostation=ostation, lstHistory = lstHistory, dtfrom = dtfrom, dtto = dtto, alert=False)
 
 
 @dlb.route('/stationYSI/<stationid>', methods=['GET', 'POST'])
 def stationYSI_page(stationid):
+    from app import app, db
+    from .models import historyItemsYSIs
+    from flask import session
     print "stationYSI page..."
     form = StationYSIForm(request.form)
-    if request.method == 'POST':
-        if form.validate():
-            print "StationYSIForm : ok"
-            stationid = request.form.get('stationid')
-            observator = request.form.get('observator')
-            recTs = request.form.get('recTs')
-            dtrecTs = datetime.strptime(recTs,'%d/%m/%Y %H:%M')
-            gaugeTs = request.form.get('gaugeTs')
-            dtgaugeTs = datetime.strptime(gaugeTs,'%d/%m/%Y %H:%M')
-            gaugeValue = request.form.get('gaugeValue')
-            comment = request.form.get('comment')
-            deltaT = request.form.get('deltaT')
+    if request.form.get('formname')=='stationYSI':
+        if request.method == 'POST':
 
+            if form.validate():
+                print "StationYSIForm : ok"
+                histo = historyItemsYSIs()
+                histo.stationid = request.form.get('stationid')
+                ostation = functions.getStationInfo(histo.stationid)
+                histo.sensorExNumber=ostation.sensorExNumber
+                histo.gaugeExNumber=ostation.gaugeExNumber
+                recTs = request.form.get('recTs')
+                histo.recTs = datetime.strptime(recTs, '%d/%m/%Y %H:%M')
+                histo.operator = "me"
+                histo.observator = request.form.get('observator')
+                if (histo.observator == ""):
+                    histo.observator = histo.operator
 
-            hardwareChanged = request.form.get('hardwareChanged')
-            hardwareNumberOld = request.form.get('hardwareNumberOld')
-            hardwareTsOld = request.form.get('hardwareTsOld')
-            dthardwareTsOld = datetime.strptime(hardwareTsOld,'%d/%m/%Y %H:%M')
-            hardwareNumberNew = request.form.get('hardwareNumberNew')
-            hardwareTsNew = request.form.get('hardwareTsNew')
-            dthardwareTsNew = datetime.strptime(hardwareTsNew,'%d/%m/%Y %H:%M')
+                gaugeTs = request.form.get('gaugeTs')
+                histo.gaugeTs = datetime.strptime(gaugeTs, '%d/%m/%Y %H:%M')
+                histo.gaugeValue = request.form.get('gaugeValue')
+                histo.gaugeCleaned = request.form.get('gaugeCleaned')
+                histo.comment = request.form.get('comment')
+                histo.deltaT = request.form.get('deltaT')
 
+                histo.hardwareChanged = request.form.get('hardwareChanged')
+                histo.hardwareNumberOld = request.form.get('hardwareNumberOld')
+                hardwareTsOld = request.form.get('hardwareTsOld')
+                histo.hardwareTsOld = datetime.strptime(hardwareTsOld, '%d/%m/%Y %H:%M')
+                histo.hardwareNumberNew = request.form.get('hardwareNumberNew')
+                hardwareTsNew = request.form.get('hardwareTsNew')
+                histo.hardwareTsNew = datetime.strptime(hardwareTsNew, '%d/%m/%Y %H:%M')
 
-            hardwareCleaned = request.form.get('hardwareCleaned')
-            hardwareCalibrated = request.form.get('hardwareCalibrated')
-            samplesCollected = request.form.get('samplesCollected')
-            sectionCleaned = request.form.get('sectionCleaned')
+                histo.hardwareCleaned = request.form.get('hardwareCleaned')
+                histo.hardwareCalibrated = request.form.get('hardwareCalibrated')
+                histo.samplesCollected = request.form.get('samplesCollected')
+                histo.sectionCleaned = request.form.get('sectionCleaned')
 
-            ostation = functions.getStationInfo(stationid)
-            operator = "me"
-            if (observator == ""):
-                observator = operator
+                db.session.add(histo)
+                db.session.commit()
+                flash("Phys.Par. logbook entry saved !","success")
+                print "historyItemsYSIs inserted"
+                print stationid
+                stationList = functions.getStationList()
+                station = functions.getStationInfo(session['stationid'])
+                return render_template('stationlist.html', stationList=stationList, station=station)
+            else:
+                print "StationYSIForm : NOT ok"
+                ostation = functions.getStationInfo(stationid)
+                lstHistory = functions.getHistoryYSI(stationid, app.config['DLB_NB_STATION_HISTORY_ITEMS'])
+                functions.flash_errors(form)
+                return render_template('stationYSI.html', ostation=ostation, lstHistory = lstHistory, form=form)
 
-            from app import app, db
-            from app.main.models import historyItemsYSIs
-            histo = historyItemsYSIs(stationid=stationid,
-                                    recTs = dtrecTs,
-                                    deltaT = deltaT,
-                                    operator = operator,
-                                    observator = observator,
-                                    gaugeExNumber = ostation.gaugeExNumber,
-                                    gaugeTs = dtgaugeTs,
-                                    gaugeValue = gaugeValue,
-                                    hardwareChanged = hardwareChanged,
-                                    hardwareNumberOld = hardwareNumberOld,
-                                    hardwareTsOld = dthardwareTsOld,
-                                    hardwareNumberNew = hardwareNumberNew,
-                                    hardwareTsNew = dthardwareTsNew,
-                                    hardwareCleaned = hardwareCleaned,
-                                    hardwareCalibrated = hardwareCalibrated,
-                                    samplesCollected = samplesCollected,
-                                    sectionCleaned = sectionCleaned,
-                                    comment = comment
-                                    )
-            db.session.add(histo)
-            db.session.commit()
-            print "historyItemsYSIs inserted"
-            print stationid
-            stationList = functions.getStationList()
-            return render_template('dlb/stationlist.html', stationList=stationList, alert=False)
-        else:
-            print "StationYSIForm : NOT ok"
-            ostation = functions.getStationInfo(stationid)
-            lstHistory = functions.getHistoryYSI(stationid, 5)
-            return render_template('dlb/stationYSI.html', ostation=ostation, lstHistory = lstHistory, alert=True)
-
-    lstHistory = functions.getHistoryYSI(stationid, 5)
+    lstHistory = functions.getHistoryYSI(stationid, app.config['DLB_NB_STATION_HISTORY_ITEMS'])
     ostation = functions.getStationInfo(stationid)
-    return render_template('dlb/stationYSI.html', ostation=ostation, lstHistory = lstHistory, alert=False)
+    return render_template('stationYSI.html', ostation=ostation, lstHistory = lstHistory, form=form)
 
 
 @dlb.route('/test', methods=['GET', 'POST'])
 def test_page():
 
     txt = "origin"
-    return render_template('dlb/test.html', txt=txt)
+    return render_template('test.html', txt=txt)
+
+
+
 
 # @dlb.route('/test', methods=['GET', 'POST'])
 # def test_page():
@@ -411,12 +318,34 @@ def test_page():
 #
 #             # Redirect to home page
 #             txt = "pas d'erreur"
-#             return render_template('dlb/test.html',txt = txt)
+#             return render_template('test.html',txt = txt)
 #         else:
 #     # Process GET or invalid POST
 #             txt = "error"
-#             return render_template('dlb/test.html',txt=txt)
+#             return render_template('test.html',txt=txt)
 #
 #
 #     txt = "rien"
-#     return render_template('dlb/test.html', txt=txt)
+#     return render_template('test.html', txt=txt)
+
+
+@dlb.route('/user/profile', methods=['GET', 'POST'])
+@login_required
+def user_profile_page():
+    # Initialize form
+    form = UserProfileForm(request.form, current_user)
+
+    # Process valid POST
+    if request.method == 'POST' and form.validate():
+        # Copy form fields to user_profile fields
+        form.populate_obj(current_user)
+
+        # Save user_profile
+        db.session.commit()
+
+        # Redirect to home page
+        return redirect(url_for('main.home_page'))
+
+    # Process GET or invalid POST
+    return render_template('main/user_profile_page.html',
+                           form=form)

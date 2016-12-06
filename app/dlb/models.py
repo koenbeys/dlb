@@ -1,9 +1,5 @@
-from flask_user import UserMixin
 from app import db
 
-
-# Define the stations data model
-# Define the stations data model
 class Stations(db.Model):
     __tablename__ = 'stations'
 
@@ -14,10 +10,9 @@ class Stations(db.Model):
     stationdescription = db.Column(db.Unicode(50), nullable=False, server_default=u'')
     stationHQ = db.Column(db.Boolean(), nullable=False, server_default='1')
     stationYSI = db.Column(db.Boolean(), nullable=False, server_default='1')
-    stationCTD = db.Column(db.Boolean(), nullable=False, server_default='1')
+    # stationCTD = db.Column(db.Boolean(), nullable=False, server_default='1')
     #stationExNumberGauge = db.Column(db.Unicode(50), nullable=False, server_default=u'')
     #stationtype = db.Column(db.Integer(),nullable=False, server_default=1)
-
 
 class historyItemsHQs(db.Model):
     __tablename__ = 'historyItemsHQ'
@@ -46,7 +41,6 @@ class historyItemsHQs(db.Model):
     hardwareCalibrated = db.Column(db.Boolean(), nullable=False, server_default='0')
     deltaT = db.Column(db.Integer, nullable=False, server_default='0')
     comment = db.Column(db.Unicode(255), nullable=False, server_default=u'')
-
 #test commit
 
 class historyItemsYSIs(db.Model):
@@ -63,7 +57,7 @@ class historyItemsYSIs(db.Model):
     gaugeExNumber = db.Column(db.Unicode(20), nullable=False, server_default=u'')
     gaugeTs = db.Column(db.DateTime(), nullable=False, server_default='01/01/1900')
     gaugeValue = db.Column(db.Numeric(), nullable=False, server_default='-9999')
-
+    gaugeCleaned = db.Column(db.Boolean(), nullable=False, server_default='0')
     hardwareChanged = db.Column(db.Boolean(), nullable=False, server_default='0')
     hardwareNumberOld = db.Column(db.Unicode(50), nullable=False, server_default=u'')
     hardwareTsOld = db.Column(db.DateTime(), nullable=False, server_default='01/01/1900')
@@ -77,3 +71,4 @@ class historyItemsYSIs(db.Model):
 
     sectionCleaned = db.Column(db.Boolean(), nullable=False, server_default='0')
     comment = db.Column(db.Unicode(255), nullable=False, server_default=u'')
+

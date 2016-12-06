@@ -22,7 +22,7 @@
 <!-- Excel export -->
 
 
-
+²
 <form id="myform" method="post">
     <body style="margin:20px auto" onload="initform()">
         <div class="container">
@@ -41,6 +41,7 @@
                 </div>
 
             </div>
+            {% include 'main/info.html' %}
                 <br/>
             <div class="row" style="background-color:#e6f2ff">
                 <div class="col-sm-3">From:
@@ -63,11 +64,11 @@
 
             {% if lstHistory.count() > 0 %}
             <div class="row">
-                <table id="myTable"  class="table table-bordered table-condensed table-striped table-hover" >
+                <table id="myTable"   class="table table-condensed table-striped table-hover" >
                     <!--style="display:none;">-->
-                    <thead style="display:none;">
+                    <thead>
                         <tr>
-                            <th>rec</th>
+                            <th>&nbsp;</th>
                             <!--<th>gaugeExNumber</th>-->
                             <!--<th>gaugeValue</th>-->
                             <!--<th>gaugeTs</th>-->
@@ -78,48 +79,140 @@
                     </thead>
                     <tbody>
                         {% for item in lstHistory %}
-                        <tr>
-                            <td>
+                        <tr><td>
+                            {% if loop.index0 % 2 %}
+                            <div class="row" style="background-color:#e6f2ff">
+                            {% else %}
+                            <div class="row" style="background-color:#e6ffe6">
+                            {% endif %}
                                 <div class="row">
                                     <div class="col-sm-3">
+                                        <label>Date</label>
                                         {{ item.recTs }}
                                     </div>
                                     <div class="col-sm-3">
-                                        {{ "%10.2f" % (item.gaugeValue)}}
+                                        <label>Observator</label>
+                                        {{ item.observator }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label>Gauge: value</label>
+                                        {% if item.gaugeValue > -9990 %}
+                                            {{ "%10.2f" % (item.gaugeValue) }} mTAW
+                                        {% else %}
+                                            &nbsp;
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>time</label>
+                                        {{ item.gaugeTs }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>cleaned</label>
+                                        {% if item.gaugeCleaned %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label>Logger: Changed</label>
+                                        {% if item.hardwareChanged == True %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Cleaned</label>
+                                        {% if item.hardwareCleaned == True %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Calibrated</label>
+                                        {% if item.hardwareCalibrated == True %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if item.hardwareChanged == True %}
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <label>Serial nb. old datalogger</label>
+                                        {{ item.hardwareNumberOld }}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label>&nbsp;</label>
+                                        {{ item.hardwareTsOld }}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label>Serial nb. new datalogger</label>
+                                        {{ item.hardwareNumberNew }}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label>&nbsp;</label>
+                                        {{ item.hardwareTsNew }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label>Delta T</label>
+                                        {% if item.gaugeValue > -9990 %}
+                                            {% if item.deltaT > 5 %}
+                                                <font color="red"> <strong>{{ item.deltaT }} </strong> </font>
+                                            {% else %}
+                                                {{ "%5.0f" % (item.deltaT) }} s
+                                            {% endif %}
+                                        {% else %}
+                                            &nbsp;
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        {{ item.hardwareNumberOld }}
+                                        <label>Section: Cleaned</label>
+                                        {% if item.sectionCleaned == True %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
                                     </div>
                                     <div class="col-sm-3">
-                                        {{ item.hardwareNumberNew }}
-                                    </div>
-                                    <div class="col-sm-3">
-                                        {{ item.comment }}
+                                        <label>Samples: Collected</label>
+                                        {% if item.samplesCollected == True %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
                                     </div>
                                 </div>
-                            </td>
-                            <!--<td>{{ ostation.gaugeExNumber }} </td>-->
-                            <!--<td> {{ "%10.2f" % (item.gaugeValue)}}</td>-->
-                            <!--<td>{{ item.gaugeTs }}</td>-->
-                            <!--<td>{{ item.deltaT }}</td>-->
-                            <!--<td>{{ item.hardwareNumberOld }}</td>-->
-                            <!--<td>{{ item.hardwareNumberNew }}</td>-->
-                        </tr>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                                 <label>Comment:</label>
+                                        {{ item.comment }}
+
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
 
             <div class="row">
-
-
-
-            <div class="row">
-
-
-
 
                 <table id="exportTable" class="table table-hover" style="display:none;">
                     <thead>
@@ -168,6 +261,7 @@
             {% endif %}
 <!-- end of history group-->
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" class="form-control" id="formname" name="formname" value="histoYSI">
             </div>
         </div>
     </body>

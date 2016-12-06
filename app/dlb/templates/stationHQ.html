@@ -26,11 +26,7 @@
 <form id="myform" method="post">
     <body style="margin:20px auto" onload="initform()">
         <div class="container">
-            {% if alert  %}
-                <div class="alert alert-info">
-                    <strong>Info!</strong> Some data are missing.
-                </div>
-            {% endif %}
+
             <div class="row" style="background-color:#ffcc80">
                 <div class="col-xs-3">
                           <u><strong>  H/Q station </strong></u>
@@ -45,6 +41,8 @@
                 </div>
                 <p></p>
             </div>
+            {% include 'main/info.html' %}
+
             <div class="row">
                 <div class="col-sm-9">
                     <div class="row">
@@ -69,7 +67,7 @@
                         </div>
                         <div class="col-sm-3">
                             <label for="observator">Observator:</label>
-                            <input type="text" class="form-control" placeholder="Who is there" id="observator" name="observator">
+                            <input type="text" class="form-control" placeholder="Who is there" id="observator" name="observator" value = "{{ form.observator.data if (form.observator.data) else ''}}">
                         </div>
                     </div>
                     <div class="row" style="background-color:#ebebe0">
@@ -80,13 +78,13 @@
                     <div class="row" style="background-color:#ebebe0">
                         <div class="col-sm-4">
                             <label for="sensorValue">value:</label>
-                            <input type="text" class="form-control" placeholder="m TAW" id="sensorValue" name="sensorValue">
+                            <input type="text" class="form-control" placeholder="m TAW" id="sensorValue" name="sensorValue" value = "{{ form.sensorValue.data if (form.sensorValue.data) else ''}}">
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="sensorTime">Time:</label>
                                 <div class='input-group datea'>
-                                    <input type="text" class="form-control" placeholder="hh:mm"  id="sensorTime" name="sensorTime">
+                                    <input type="text" class="form-control" placeholder="hh:mm"  id="sensorTime" name="sensorTime" value="{{ form.sensorTime.data if (form.sensorTime.data) else ''}}">
                                     <span class="input-group-addon">
                                         <button type="button" onclick="set_sensorTime(); return false;">Now</button>
                                     </span>
@@ -95,7 +93,11 @@
                         </div>
                         <div class="col-sm-3">
                             <label for="sensorCleaned"><br/>Cleaned</label>
+                            {% if form.sensorCleaned.data %}
+                            <input type="checkbox" class="custom-control-input" id="sensorCleaned" name="sensorCleaned" checked="checked">
+                            {% else %}
                             <input type="checkbox" class="custom-control-input" id="sensorCleaned" name="sensorCleaned">
+                            {% endif %}
                         </div>
 
                     </div>
@@ -107,13 +109,13 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <label for="gaugeValue">value:</label>
-                            <input type="text" class="form-control" placeholder="m TAW" id="gaugeValue" name="gaugeValue">
+                            <input type="text" class="form-control" placeholder="m TAW" id="gaugeValue" name="gaugeValue" value = "{{ form.gaugeValue.data if (form.gaugeValue.data) else ''}}">
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="gaugeTime">Time:</label>
                                 <div class='input-group datea'>
-                                    <input type="text" class="form-control" placeholder="hh:mm"  id="gaugeTime" name="gaugeTime">
+                                    <input type="text" class="form-control" placeholder="hh:mm"  id="gaugeTime" name="gaugeTime" value="{{ form.gaugeTime.data if (form.gaugeTime.data) else ''}}">
                                     <span class="input-group-addon">
                                         <button type="button" onclick="set_gaugeTime(); return false;">Now</button>
                                     </span>
@@ -122,7 +124,11 @@
                         </div>
                         <div class="col-sm-3">
                             <label for="gaugeCleaned"><br/>Cleaned</label>
+                            {% if form.gaugeCleaned.data %}
+                            <input type="checkbox" class="custom-control-input" id="gaugeCleaned" name="gaugeCleaned" checked="checked">
+                            {% else %}
                             <input type="checkbox" class="custom-control-input" id="gaugeCleaned" name="gaugeCleaned">
+                            {% endif %}
                         </div>
                     </div>
 
@@ -134,33 +140,49 @@
                     <div class="row" style="background-color:#ebebe0">
                         <div class="col-sm-3">
                             <label for="hardwareReset">reset</label>
+                            {% if form.hardwareReset.data %}
+                            <input type="checkbox" class="custom-control-input" id="hardwareReset" name="hardwareReset" checked="checked">
+                            {% else %}
                             <input type="checkbox" class="custom-control-input" id="hardwareReset" name="hardwareReset">
+                            {% endif %}
                         </div>
                         <div class="col-sm-3">
                             <label for="hardwareConfigured">config</label>
+                            {% if form.hardwareConfigured.data %}
+                            <input type="checkbox" class="custom-control-input" id="hardwareConfigured" name="hardwareConfigured" checked="checked">
+                            {% else %}
                             <input type="checkbox" class="custom-control-input" id="hardwareConfigured" name="hardwareConfigured">
+                            {% endif %}
                         </div>
                         <div class="col-sm-3">
                             <label for="hardwareChanged">changed</label>
-                            <input type="checkbox" class="custom-control-input" id="hardwareChanged" name="hardwareChanged">
+                            {% if form.hardwareChanged.data %}
+                            <input type="checkbox" class="custom-control-input" id="hardwareChanged" name="hardwareChanged" checked="checked">
+                            {% else %}
+                            <input type="checkbox" class="custom-control-input" id="hardwareChanged" name="hardwareChanged" >
+                            {% endif %}
                         </div>
                         <div class="col-sm-3">
                             <label for="hardwareCalibrated">calibrated</label>
+                            {% if form.hardwareCalibrated.data %}
+                            <input type="checkbox" class="custom-control-input" id="hardwareCalibrated" name="hardwareCalibrated" checked="checked">
+                            {% else %}
                             <input type="checkbox" class="custom-control-input" id="hardwareCalibrated" name="hardwareCalibrated">
+                            {% endif %}
                         </div>
                     </div>
                     <div class="row" style="background-color:#ebebe0">
                         <div class="col-sm-4">
                             <label for="hardwareNumberOld">Serial nb. old</label>
-                            <input type="text" class="form-control" id="hardwareNumberOld" disabled name="hardwareNumberOld">
+                            <input type="text" class="form-control" id="hardwareNumberOld" disabled name="hardwareNumberOld" value = "{{ form.hardwareNumberOld.data if (form.hardwareNumberOld.data) else ''}}">
                         </div>
                         <div class="col-sm-4">
                             <label for="hardwareNumberNew">Serial nb. new</label>
-                            <input type="text" class="form-control" id="hardwareNumberNew" disabled name="hardwareNumberNew">
+                            <input type="text" class="form-control" id="hardwareNumberNew" disabled name="hardwareNumberNew" value = "{{ form.hardwareNumberNew.data if (form.hardwareNumberNew.data) else ''}}">
                         </div>
                         <div class="col-sm-3">
                             <label for="deltaT">Delta T</label>
-                            <input type="text" class="form-control" placeholder="seconds" id="deltaT" name="deltaT">
+                            <input type="text" class="form-control" placeholder="seconds" id="deltaT" name="deltaT" value = "{{ form.deltaT.data if (form.deltaT.data) else ''}}">
                                                 <br/>
                         </div>
 
@@ -174,24 +196,31 @@
 
                         <div class="col-sm-3">
                             <label for="sectionCleaned">cleaned</label>
+                            {% if form.sectionCleaned.data %}
+                            <input type="checkbox" class="custom-control-input" id="sectionCleaned" name="sectionCleaned" checked="checked">
+                            {% else %}
                             <input type="checkbox" class="custom-control-input" id="sectionCleaned" name="sectionCleaned">
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-3">
                     <div class="row">
                          <label for="comment">Comment:</label>
-                        <textarea class="form-control" rows="5" placeholder="Enter your comments here?" id="comment" name="comment"></textarea>
+                        <textarea class="form-control" rows="5" placeholder="Enter your comments here?" id="comment" name="comment" maxlength="250">{{ form.comment.data if (form.comment.data) else ''}}</textarea>
                     </div>
                     <p>&nbsp;</p>
                     <div class="row">
                         <button type="button" class="btn btn-primary btn-lg col-sm-12" onclick="mysubmit();">Save</button>
                     </div>
-                    <input type="text" class="form-control" id="stationid" name="stationid" value="{{ ostation.stationid }}">
-                    <input type="text" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <input type="text" class="form-control" id="recTs" name="recTs">
-                    <input type="text" class="form-control" id="sensorTs" name="sensorTs">
-                    <input type="text" class="form-control" id="gaugeTs" name="gaugeTs">
+                    <div class="row" style="display:none">
+                        <input type="text" class="form-control" id="stationid" name="stationid" value="{{ ostation.stationid }}">
+                        <input type="text" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input type="text" class="form-control" id="recTs" name="recTs">
+                        <input type="text" class="form-control" id="sensorTs" name="sensorTs">
+                        <input type="text" class="form-control" id="gaugeTs" name="gaugeTs">
+                        <input type="hidden" class="form-control" id="formname" name="formname" value="stationHQ">
+                    </div>
                     <!--<input type="text" class="form-control" id="stationExNumber" name="stationExNumber"  value="{{ ostation.stationExNumber }}">-->
                 </div>
             </div>
@@ -210,7 +239,7 @@
                     {% else %}
                         <div class="row" style="background-color:#e6ffe6">
                     {% endif %}
-                    <div class="col-sm-9">
+                    <div class="col-sm-12">
                         <div class="row">
                             <div class="col-sm-3">
                                 <label>Date</label>
@@ -350,14 +379,14 @@
                                     No
                                 {% endif %}
                             </div>
+                            <div class="col-sm-9">
+                                         <label>Comment:</label>
+                                {{ item.comment }}
 
+                            </div>
                        </div>
                     </div>
-                    <div class="col-sm-3">
-                                 <label>Comment:</label>
-                        {{ item.comment }}
 
-                    </div>
                 </div>
                 <p>&nbsp;</p>
                 {% endfor %}
@@ -399,6 +428,11 @@ function initform() {
 
                 set_recDate();
                 set_recTime();
+        if (document.getElementById("hardwareChanged").checked == true){
+            document.getElementById("hardwareNumberOld").removeAttribute('disabled')
+            document.getElementById("hardwareNumberNew").removeAttribute('disabled')
+        }
+        document.getElementById("observator").focus();
                 //set_dataloggerTime();
                 //set_gaugeTime();
                 //document.getElementById("dataloggerValue").value = "-9999"
@@ -454,6 +488,12 @@ function mysubmit(){
             //document.getElementById("operator").value = "me"
           //  }
 
+        if (document.getElementById("hardwareChanged").checked != true){
+            document.getElementById("hardwareNumberOld").value = "-"
+            document.getElementById("hardwareNumberNew").value = "-"
+            document.getElementById("hardwareNumberOld").removeAttribute('disabled')
+            document.getElementById("hardwareNumberNew").removeAttribute('disabled')
+        }
 
         $("#myform").submit();
 }
@@ -464,6 +504,15 @@ $(document).ready(function($){
         alert('submit');
         return false; // return false to cancel form action
     });
+
+    var focusedElement;
+    $(document).on('focus', 'input', function () {
+        if (focusedElement == this) return; //already focused, return so user can now place cursor at specific point in input.
+        focusedElement = this;
+        setTimeout(function () { focusedElement.select(); }, 50); //select all text in any field on focus for easy re-entry. Delay sightly to allow focus to "stick" before selecting.
+    });
+
+
 });
 </script>
 

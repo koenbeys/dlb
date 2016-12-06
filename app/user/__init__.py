@@ -2,8 +2,8 @@
 # a Python package so it can be accessed using the 'import' statement.
 from flask import Blueprint
 
-dlb = Blueprint('dlb', __name__,template_folder='templates',static_folder='static')
+user = Blueprint('user', __name__,template_folder='template')
 from . import forms
 from . import views
 from . import models
-from . import functions
+

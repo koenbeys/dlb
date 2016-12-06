@@ -53,6 +53,9 @@ class Config:
     DLB_SENSOR_TO_ZRX = False
     DLB_STATIONLIST_FILENAME = "stations.txt"
 
+    DLB_NB_STATION_HISTORY_ITEMS = 5
+    DLB_NB_HISTO_HISTORY_ITEMS = 10
+
     @staticmethod
     def init_app(app):
         pass

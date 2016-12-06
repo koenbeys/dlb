@@ -9,20 +9,18 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
 <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<!--<script type="text/javascript" src="jquery.dataTables.min.js"></script>-->
 <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 <form id="myform" class="form-inline" method="post">
-    <body>
+    <body onload="initform()">
         <div class="container">
-            {% if alert  %}
-                <div class="alert alert-info">
-                    <strong>Info!</strong> You must select a location.
-                </div>
-            {% else %}
-                <div class="row header" style="text-align:center;color:green">
+
+            {% include 'main/info.html' %}
+
+                <div class="row header" style="color:green">
                     <h3>Select location...</h3>
                 </div>
-            {% endif %}
             <table id="myTable" class="table table-bordered table-condensed table-striped table-hover" >
                 <thead>
                     <tr>
@@ -53,19 +51,24 @@
             <div class="row">
                 <div class="form-group col-sm-3">
                     <label for="code">Code:</label>
-                    <input type="text" class="form-control" id="code" name="code" disabled>
+                    <input type="text" class="form-control" id="code" name="code" value="{{ station.stationname }}" disabled>
                 </div>
                 <div class="form-group col-sm-5">
                     <label for="location">Location:</label>
-                    <input type="text" class="form-control" id="location" name="location" disabled>
+                    <input type="text" class="form-control" id="location" name="location" value="{{ station.stationdescription }}" disabled>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-sm-7">&nbsp;</div>
                 <div class="form-group col-sm-5">
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary btn-lg" id="buttonHQ" disabled onclick="mysubmit('HQ');">HQ station</button>
-                        <button type="button" class="btn btn-primary btn-lg" id="buttonHQvalidation" disabled  onclick="mysubmit('histoHQ');">HQ validation</button>
+                        {% if station.stationHQ == 0 %}
+                            <button type="button" class="btn btn-primary btn-lg" id="buttonHQ" disabled onclick="mysubmit('HQ');">HQ</button>
+                            <button type="button" class="btn btn-primary btn-lg" id="buttonHQvalidation" disabled  onclick="mysubmit('histoHQ');">HQ validation</button>
+                        {% else %}
+                            <button type="button" class="btn btn-primary btn-lg" id="buttonHQ" onclick="mysubmit('HQ');">HQ</button>
+                            <button type="button" class="btn btn-primary btn-lg" id="buttonHQvalidation"  onclick="mysubmit('histoHQ');">HQ validation</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -74,20 +77,34 @@
                 <div class="form-group col-sm-7">&nbsp;</div>
                 <div class="form-group col-sm-5">
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary btn-lg" id="buttonYSI" disabled onclick="mysubmit('YSI');">Phys.Par. station</button>
-                        <button type="button" class="btn btn-primary btn-lg" id="buttonYSIvalidation" disabled onclick="mysubmit('histoYSI');">Phys.Par. validation</button>
+                        {% if station.stationYSI == 0 %}
+                            <button type="button" class="btn btn-primary btn-lg" id="buttonYSI" disabled onclick="mysubmit('YSI');">Phys.Par.</button>
+                            <button type="button" class="btn btn-primary btn-lg" id="buttonYSIvalidation" disabled onclick="mysubmit('histoYSI');">Phys.Par. validation</button>
+                        {% else %}
+                            <button type="button" class="btn btn-primary btn-lg" id="buttonYSI" onclick="mysubmit('YSI');">Phys.Par.</button>
+                            <button type="button" class="btn btn-primary btn-lg" id="buttonYSIvalidation" onclick="mysubmit('histoYSI');">Phys.Par. validation</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <input type="hidden" class="form-control" id="stationid" name="stationid">
+                <input type="hidden" class="form-control" id="stationid" name="stationid" value="{{ station.stationid }}">
                 <input type="hidden" class="form-control" id="op" name="op">
+                <input type="hidden" class="form-control" id="formname" name="formname" value="stationlist">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             </div>
         </div>
     </body>
 </form>
 <script>
+
+function initform() {
+
+}
+
+
+
+
 $(document).ready(function($){
     //alert("oo")
     var oTable = $('#myTable').dataTable();

@@ -81,6 +81,8 @@ def create_app(config_name):
     from app.dlb import dlb as dlb_blueprint
     app.register_blueprint(dlb_blueprint)
 
+    from app.user import user as user_blueprint
+    app.register_blueprint(user_blueprint)
 
     #create app directories if not exist
     directory = app.config['DLB_UPLOAD_FOLDER']

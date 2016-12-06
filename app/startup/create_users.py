@@ -25,6 +25,7 @@ def create_users():
                     username=u"appadmin",
                     first_name=u"Application admin",
                     last_name=u"Admin",
+                    has_confirmed_email=True,
                     password=app.user_manager.hash_password("Borg2140"),
                     active=True)
         db.session.add(user)

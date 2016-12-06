@@ -31,6 +31,11 @@
 <form id="myform" method="post">
     <body style="margin:20px auto" onload="initform()">
         <div class="container">
+
+
+
+
+
             <div class="row" style="background-color:#ffcc80">
                 <div class="col-xs-3">
                           <u><strong>  H/Q station </strong></u>
@@ -46,7 +51,10 @@
                 </div>
 
             </div>
-                <br/>
+
+            {% include 'main/info.html' %}
+
+
             <div class="row" style="background-color:#e6f2ff">
                 <div class="col-sm-3">From:
                     <div class="input-group date">
@@ -55,7 +63,7 @@
                 </div>
                 <div class="col-sm-3">To:
                     <div class="input-group date">
-                        <input type="text" id="dtto" name="dtto" class="form-control" value="{{ dtto }}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        <input type="text" id="dtto" name="dtto" class="form-control" value="{{ dtto }}"><span class="input-group-addon"><i class="glyphicon glyphicon-tint"></i></span>
                     </div>
                 </div>
                 <div class="col-sm-3">
@@ -71,16 +79,10 @@
 
                         <div class="row">
                 <table id="myTable"  class="table table-condensed table-striped table-hover" >
-                    <!--style="display:none;">-->
-                    <thead style="display:none;">
+                    <thead>
                         <tr>
-                            <th>rec</th>
-                            <!--<th>gaugeExNumber</th>-->
-                            <!--<th>gaugeValue</th>-->
-                            <!--<th>gaugeTs</th>-->
-                            <!--<th>deltaT</th>-->
-                            <!--<th>hardwareNumberOld</th>-->
-                            <!--<th>hardwareNumberNew</th>-->
+                            <th>&nbsp;</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -298,6 +300,7 @@
             {% endif %}
 <!-- end of history group-->
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" class="form-control" id="formname" name="formname" value="histoHQ">
             </div>
         </div>
     </body>

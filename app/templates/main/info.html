@@ -1,0 +1,48 @@
+            {% with messages = get_flashed_messages(category_filter=["error"]) %}
+                {% if messages %}
+                    <div class="row">
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button><u>Error</u>:
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=["success"]) %}
+                {% if messages %}
+                    <div class="row">
+                    <div class="alert alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button><u>Info</u>:
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=["warning"]) %}
+                {% if messages %}
+                    <div class="row">
+                    <div class="alert alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button><u>Warning</u>:
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=[""]) %}
+                {% if messages %}
+                    <div class="row">
+                    <div class="alert alert-info">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button><u>info</u>:
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
