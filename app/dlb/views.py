@@ -1,5 +1,5 @@
 from flask import redirect, render_template, request,url_for, flash
-from flask_user import login_required,current_user
+from flask_user import login_required,current_user,roles_accepted
 from . import dlb
 from .forms import StationListForm, TestForm, StationHQForm, StationYSIForm, histoHQForm, histoYSIForm
 
@@ -75,6 +75,8 @@ def upload():
 
 
 @dlb.route('/uploadFile', methods=['GET', 'POST'])
+@login_required
+@roles_accepted('admin','validator')
 def uploadFile_page():
    return render_template('uploadFile.html')
 
@@ -83,6 +85,8 @@ def uploadFile_page():
 
 
 @dlb.route('/stationlist', methods=['GET', 'POST'])
+@login_required
+
 def stationlist_page():
     from flask import session
     from classes import stationItem
