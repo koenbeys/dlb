@@ -3,6 +3,7 @@
 from flask import Blueprint
 
 dlb = Blueprint('dlb', __name__,template_folder='templates',static_folder='static')
+#dlb = Blueprint('dlb', __name__,template_folder='templates')
 from . import forms
 from . import views
 from . import models
