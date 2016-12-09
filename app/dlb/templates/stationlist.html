@@ -16,7 +16,7 @@
     <body onload="initform()">
         <div class="container">
 
-            {% include 'main/info.html' %}
+
 
                 <div class="row header" style="color:green">
                     <h3>Select location...</h3>
@@ -62,12 +62,28 @@
                 <div class="form-group col-sm-7">&nbsp;</div>
                 <div class="form-group col-sm-5">
                     <div class="form-group">
-                        {% if station.stationHQ == 0 %}
-                            <button type="button" class="btn btn-primary btn-lg" id="buttonHQ" disabled onclick="mysubmit('HQ');">HQ</button>
-                            <button type="button" class="btn btn-primary btn-lg" id="buttonHQvalidation" disabled  onclick="mysubmit('histoHQ');">HQ validation</button>
+                        {% if station.stationHQ == 1 %}
+                            {% if current_user.has_role('controler') %}
+                                <button type="button" class="btn btn-primary btn-lg" id="buttonHQ" onclick="mysubmit('HQ');">HQ</button>
+                            {% else %}
+                                <input type="hidden" id="buttonHQ">
+                            {% endif %}
+                            {% if current_user.has_role('validator') %}
+                                <button type="button" class="btn btn-primary btn-lg" id="buttonHQvalidation" disabled  onclick="mysubmit('histoHQ');">HQ validation</button>
+                            {% else %}
+                                <input type="hidden" id="buttonHQvalidation">
+                            {% endif %}
                         {% else %}
-                            <button type="button" class="btn btn-primary btn-lg" id="buttonHQ" onclick="mysubmit('HQ');">HQ</button>
-                            <button type="button" class="btn btn-primary btn-lg" id="buttonHQvalidation"  onclick="mysubmit('histoHQ');">HQ validation</button>
+                            {% if current_user.has_role('controler') %}
+                                <button type="button" class="btn btn-primary btn-lg" id="buttonHQ" disabled onclick="mysubmit('HQ');">HQ</button>
+                            {% else %}
+                                <input type="hidden" id="buttonHQ" >
+                            {% endif %}
+                            {% if current_user.has_role('validator') %}
+                                <button type="button" class="btn btn-primary btn-lg" id="buttonHQvalidation" disabled  onclick="mysubmit('histoHQ');">HQ validation</button>
+                            {% else %}
+                                <input type="hidden"id="buttonHQvalidation" >
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
@@ -77,12 +93,28 @@
                 <div class="form-group col-sm-7">&nbsp;</div>
                 <div class="form-group col-sm-5">
                     <div class="form-group">
-                        {% if station.stationYSI == 0 %}
-                            <button type="button" class="btn btn-primary btn-lg" id="buttonYSI" disabled onclick="mysubmit('YSI');">Phys.Par.</button>
-                            <button type="button" class="btn btn-primary btn-lg" id="buttonYSIvalidation" disabled onclick="mysubmit('histoYSI');">Phys.Par. validation</button>
+                        {% if station.stationYSI == 1 %}
+                            {% if current_user.has_role('controler') %}
+                                <button type="button" class="btn btn-primary btn-lg" id="buttonYSI" onclick="mysubmit('YSI');">Phys.Par.</button>
+                            {% else %}
+                                <input type="hidden" id="buttonYSI">
+                            {% endif %}
+                            {% if current_user.has_role('validator') %}
+                                <button type="button" class="btn btn-primary btn-lg" id="buttonYSIvalidation" disabled  onclick="mysubmit('histoHQ');">Phys.Par. validation</button>
+                            {% else %}
+                                <input type="hidden" id="buttonYSIvalidation">
+                            {% endif %}
                         {% else %}
-                            <button type="button" class="btn btn-primary btn-lg" id="buttonYSI" onclick="mysubmit('YSI');">Phys.Par.</button>
-                            <button type="button" class="btn btn-primary btn-lg" id="buttonYSIvalidation" onclick="mysubmit('histoYSI');">Phys.Par. validation</button>
+                            {% if current_user.has_role('controler') %}
+                                <button type="button" class="btn btn-primary btn-lg" id="buttonYSI" disabled onclick="mysubmit('HQ');">Phys.Par.</button>
+                            {% else %}
+                                <input type="hidden" id="buttonYSI" >
+                            {% endif %}
+                            {% if current_user.has_role('validator') %}
+                                <button type="button" class="btn btn-primary btn-lg" id="buttonYSIvalidation" disabled  onclick="mysubmit('histoHQ');">Phys.Par. validation</button>
+                            {% else %}
+                                <input type="hidden"id="buttonYSIvalidation" >
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>

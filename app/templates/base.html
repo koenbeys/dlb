@@ -26,11 +26,17 @@
             <!--<li class="active"><a href="#">Meetpost</a></li>-->
             <!--<li><a href="{{ url_for('dlb.oproep_page') }}">Oproep</a></li>-->
             <li><a href="{{ url_for('dlb.stationlist_page') }}">Digital logbook</a></li>
-            <li><a href="{{ url_for('dlb.uploadFile_page') }}">Upload file</a></li>
-            <li><a href="{{ url_for('user.userList_page') }}">Users management</a></li>
-            <li><a href="{{ url_for('dlb.test_page') }}">Test page</a></li>
+            {% if current_user.is_authenticated %}
+            {% if current_user.has_role('validator') %}
+                <li><a href="{{ url_for('dlb.uploadFile_page') }}">Upload file</a></li>
+            {% endif %}
+            {% if current_user.has_role('admin') %}
+                <li><a href="{{ url_for('user.userList_page') }}">Users management</a></li>
+                <li><a href="{{ url_for('dlb.test_page') }}">Test page</a></li>
+            {% endif %}
+            {% endif %}
 
-            <li><a href="{{ url_for('main.info_page') }}">info</a></li>
+            <!--<li><a href="{{ url_for('main.info_page') }}">info</a></li> -->
 
 
             <!--<li><a href="{{ url_for('user.newuser_page') }}">New user</a></li>-->
@@ -72,16 +78,58 @@
     <div id="main-div" class="with-margins">
     {# One-time system messages called Flash messages #}
     {% block flash_messages %}
-        {%- with messages = get_flashed_messages(with_categories=true) -%}
-            {% if messages %}
-                {% for category, message in messages %}
-                    {% if category=='error' %}
-                        {% set category='danger' %}
-                    {% endif %}
-                    <div class="alert alert-{{category}}">{{ message|safe }}</div>
-                {% endfor %}
-            {% endif %}
-        {%- endwith %}
+
+
+            {% with messages = get_flashed_messages(category_filter=["error"]) %}
+                {% if messages %}
+                    <div class="row">
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button><u>Error</u>:
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=["success"]) %}
+                {% if messages %}
+                    <div class="row">
+                    <div class="alert alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button><u>Info</u>:
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=["warning"]) %}
+                {% if messages %}
+                    <div class="row">
+                    <div class="alert alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button><u>Warning</u>:
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=[""]) %}
+                {% if messages %}
+                    <div class="row">
+                    <div class="alert alert-info">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button><u>info</u>:
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+
     {% endblock %}
 
     {% block mainl %}{% block content %}{% endblock %}{% endblock %}

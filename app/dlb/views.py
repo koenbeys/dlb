@@ -96,6 +96,10 @@ def stationlist_page():
             print "StationListForm : ok"
             stationid = request.form.get('stationid')
             session['stationid'] = stationid
+
+            isValidator = False
+
+
             print stationid
             op = request.form.get('op')
             if (op == "HQ"):
