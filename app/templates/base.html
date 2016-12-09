@@ -79,7 +79,7 @@
     {# One-time system messages called Flash messages #}
     {% block flash_messages %}
 
-
+<div class="container">
             {% with messages = get_flashed_messages(category_filter=["error"]) %}
                 {% if messages %}
                     <div class="row">
@@ -129,7 +129,7 @@
                 {% endif %}
             {% endwith %}
 
-
+</div>
     {% endblock %}
 
     {% block mainl %}{% block content %}{% endblock %}{% endblock %}
