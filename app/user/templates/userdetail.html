@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!--<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">-->
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
+<!--<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">-->
+<!--<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>-->
+<!--<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
+
+<style type="text/css">
+
+      div.row {
+        border: 0px solid;
+      }
+
+
+</style>
+
+<style>
+    .state-icon {
+    left: -5px;
+}
+.list-group-item-primary {
+    color: rgb(255, 255, 255);
+    background-color: rgb(66, 139, 202);
+}
+
+<!--/* DEMO ONLY - REMOVES UNWANTED MARGIN */-->
+<!--.well .list-group {-->
+    <!--margin-bottom: 0px;-->
+<!--}-->
+
+</style>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+
+<form id="myform" method="post" class="form-horizontal">
+    <body style="margin:20px auto" onload="initform()">
+        <div class="container">
+            {% if alert  %}
+                <div class="alert alert-info">
+                    <strong>Info!</strong> Some data are missing.
+                </div>
+            {% endif %}
+            <div class="row" style="background-color:#ffcc80">
+                <div class="col-xs-3">
+                          <u><strong> User detail for id= {{ cuser.id }} </strong></u>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="username">username:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="username" name="username" value = "{{ cuser.username }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="first_name">first name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="first_name" name="first_name" value = "{{ cuser.first_name }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="last_name">last name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="last_name" name="last_name" value = " {{cuser.last_name }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="email">email:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="email" name="email" value = " {{cuser.email}} ">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="confirmed_at">confirmed at:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="confirmed_at" name="confirmed_at" disabled value = "{{ cuser.confirmed_at }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                 <div class="form-group">
+                    <label class="control-label col-sm-2" for="gsmnr">gsmnr:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="gsmnr" name="gsmnr" value = "{{ cuser.gsmnr }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                 <div class="form-group">
+                    <label class="control-label col-sm-2" for="active">active:</label>
+                    <div class="col-sm-1">
+                        <input type="checkbox" class="custom-control-input" id="active" name="active" checked = {{ cuser.active }}>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2">
+                    <label>Roles:</label>
+                </div>
+                <div class="col-xs-6">
+
+                    <!--<div class="well" style="max-height: 300px;overflow: auto;">-->
+                        <ul id="check-list-box" class="list-group checked-list-box">
+                            {% for rol in croles %}
+                                {% if rol[3] == True %}
+                                    <li class="list-group-item"  data-checked="true"> {{ rol[0] }} : {{ rol[1] }} </li>
+                                {% else %}
+                                    <li class="list-group-item"> {{ rol[0] }} : {{ rol[1] }} </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <br />
+                    </div>
+                </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    &nbsp;
+                </div>
+                <div class="col-xs-6">
+
+                        <!--<button class="btn btn-primary col-xs-12" id="get-checked-data">Save</button><br/>-->
+                    {% if cuser.id == -1 %}
+                        <button type="button" class="btn btn-primary btn-lg" value="HQ" id="mysubmit"  onclick="my_submit();">Create</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary btn-lg" value="HQ" id="mysubmit1"  onclick="my_submit();">Update</button>
+                    {% endif %}
+                    <!--</div>-->
+                    <!--<pre id="display-json"></pre>-->
+                </div>
+            </div>
+            <div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="newRoles" id="newRoles"/>
+                <input type="hidden" class="form-control" id="userid" name="userid" value = " {{ cuser.id }} ">
+            </div>
+        </div>
+    </body>
+</form>
+
+
+<script>
+function initform() {
+
+}
+
+function my_submit(){
+        event.preventDefault();
+        //var checkedItems = {}
+        var counter = 0, acc="";
+        $("#check-list-box li.active").each(function(idx, li) {
+            //checkedItems[counter] = $(li).text();
+            if (counter > 0){
+                acc = acc + ";"
+            }
+            acc = acc + $(li).text().split(":")[0].trim();
+            counter++;
+        });
+        document.getElementById("newRoles").value = acc
+        $("#myform").submit();
+}
+</script>
+
+
+<script>
+$(function () {
+    $('.list-group.checked-list-box .list-group-item').each(function () {
+
+        // Settings
+        var $widget = $(this),
+            $checkbox = $('<input type="checkbox" class="hidden" />'),
+            color = ($widget.data('color') ? $widget.data('color') : "primary"),
+            style = ($widget.data('style') == "button" ? "btn-" : "list-group-item-"),
+            settings = {
+                on: {
+                    icon: 'glyphicon glyphicon-check'
+                },
+                off: {
+                    icon: 'glyphicon glyphicon-unchecked'
+                }
+            };
+
+        $widget.css('cursor', 'pointer')
+        $widget.append($checkbox);
+
+        // Event Handlers
+        $widget.on('click', function () {
+            $checkbox.prop('checked', !$checkbox.is(':checked'));
+            $checkbox.triggerHandler('change');
+            updateDisplay();
+        });
+        $checkbox.on('change', function () {
+            updateDisplay();
+        });
+
+
+        // Actions
+        function updateDisplay() {
+            var isChecked = $checkbox.is(':checked');
+
+            // Set the button's state
+            $widget.data('state', (isChecked) ? "on" : "off");
+
+            // Set the button's icon
+            $widget.find('.state-icon')
+                .removeClass()
+                .addClass('state-icon ' + settings[$widget.data('state')].icon);
+
+            // Update the button's color
+            if (isChecked) {
+                $widget.addClass(style + color + ' active');
+            } else {
+                $widget.removeClass(style + color + ' active');
+            }
+        }
+
+        // Initialization
+        function init() {
+
+            if ($widget.data('checked') == true) {
+                $checkbox.prop('checked', !$checkbox.is(':checked'));
+            }
+
+            updateDisplay();
+
+            // Inject the icon if applicable
+            if ($widget.find('.state-icon').length == 0) {
+                $widget.prepend('<span class="state-icon ' + settings[$widget.data('state')].icon + '"></span> ');
+            }
+        }
+        init();
+    });
+
+});
+</script>
+
+{% endblock %}

@@ -1,10 +1,8 @@
 from flask_wtf import Form
 from wtforms import StringField, SubmitField, validators, IntegerField, BooleanField
+from flask_user.forms import RegisterForm
 
 #    , DateField, DateTimeField, TextField FloatField, PasswordField,
-
-
-
 
 # Define the User profile form
 class UserProfileForm(Form):
@@ -12,6 +10,7 @@ class UserProfileForm(Form):
         validators.DataRequired('First name is required')])
     last_name = StringField('Last name', validators=[
         validators.DataRequired('Last name is required')])
+    gsmnr = StringField('gsmnr')
     submit = SubmitField('Save')
 
 
@@ -37,3 +36,10 @@ class userdetailForm(Form):
         validators.DataRequired('username is required')])
     active =  BooleanField(u'active')
     # print "valide"
+
+class MyRegisterForm(RegisterForm):
+    first_name = StringField('First name', validators=[
+        validators.DataRequired('First name is required')])
+    last_name = StringField('Last name', validators=[
+        validators.DataRequired('Last name is required')])
+    gsmnr = StringField('gsmnr')

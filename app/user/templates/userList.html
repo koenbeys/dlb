@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- come from http://tutorialsplane.com/bootstrap-make-table-row-clickable/ -->
+<!-- combined with http://www.codeproject.com/Tips/823490/Bootstrap-Table-With-Sorting-Searching-and-Paging -->
+
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<form id="myform" class="form-inline" method="post">
+    <body>
+        <div class="container">
+            {% if alert  %}
+                <div class="alert alert-info">
+                    <strong>Info!</strong> You must select a location.
+                </div>
+            {% else %}
+                <div class="row header" style="text-align:center;color:green">
+                    <h3>Select user...</h3>
+                </div>
+            {% endif %}
+            <div class="row">
+                <table id="myTable" class="table table-bordered table-condensed table-striped table-hover" >
+                    <thead>
+                        <tr>
+
+                            <th>id</th>
+                            <th>username</th>
+                            <th>email</th>
+                            <th>first name</th>
+                            <th>last name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in tableList %}
+                            <tr  class="table-row" >
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.first_name }}</td>
+                                <td>{{ user.last_name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <h3><u>Selected user</u></h3>
+                <div class="form-group col-sm-3">
+                    <label for="userid">id:</label>
+                    <input type="text" class="form-control" id="userid" name="userid" >
+                </div>
+                <div class="form-group col-sm-5">
+                    <label for="username">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username" >
+                </div>
+            </div>
+            <div class="row">
+               <div class="col-xs-6">
+                    &nbsp;
+               </div>
+               <div class="col-xs-6">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary btn-lg" value="HQ" id="editbutton" disabled onclick="my_submit('edit');">Edit</button>
+                        <button type="button" class="btn .btn-warning btn-lg" value="HQ" id="newbutton"  onclick="my_submit('new');">New</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="id" name="op"/>
+            </div>
+        </div>
+    </body>
+</form>
+<script>
+$(document).ready(function($){
+    //alert("oo")
+    var oTable = $('#myTable').dataTable();
+    $('#myTable').on('click', 'tr', function() {
+        var oData = oTable.fnGetData(this);
+        document.getElementById("username").value = oData[1];
+        document.getElementById("userid").value = oData[0];
+        document.getElementById("editbutton").removeAttribute('disabled')
+    });
+});
+</script>
+
+<script>function my_submit(op){
+        //alert(op);
+        //document.getElementById("op").value = operation
+        if (op == "new"){
+            document.getElementById("userid").value = -1
+        }
+        //alert("Submit")
+        $("#myform").submit()
+
+}
+</script>
+
+<style type="text/css">
+    .table-row{
+        cursor:pointer;
+    }
+</style>
+
+{% endblock %}

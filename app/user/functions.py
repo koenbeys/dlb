@@ -1,5 +1,5 @@
 def getUserList():
-    from app.main.models import User
+    from .models import User
     tblUsers = User.query.filter(User.id >= 0)
     #    lstStations = []
     #    for station in tblStations:

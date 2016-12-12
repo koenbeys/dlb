@@ -9,6 +9,6 @@ from . import forms
 from . import views
 from . import models
 
-
+print "main.__init__"
 
 

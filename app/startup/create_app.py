@@ -10,7 +10,6 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from app import app, db, manager
 
-from flask_user import UserManager, SQLAlchemyAdapter
 
 # zorgt ervoor dat model beschikbaar is van proj
 from app.dlb import models
@@ -58,17 +57,17 @@ def create_app(config_name):
 
     # Setup Flask moment (tijd)
     moment = Moment(app)
-
-    # Setup Flask-User to handle user account related forms
-    from app.main.models import User
-    from app.main.forms import MyRegisterForm
-    from app.main.views import user_profile_page
-
-    db_adapter = SQLAlchemyAdapter(db, User)  # Setup the SQLAlchemy DB Adapter
-    user_manager = UserManager(db_adapter, app,  # Init Flask-User and bind to app
-                               register_form=MyRegisterForm,  # using a custom register form with UserProfile fields
-                               user_profile_view_function=user_profile_page,
-    )
+    #
+    # # Setup Flask-User to handle user account related forms
+    # from app.main.models import User
+    # from app.main.forms import MyRegisterForm
+    # from app.main.views import user_profile_page
+    #
+    # db_adapter = SQLAlchemyAdapter(db, User)  # Setup the SQLAlchemy DB Adapter
+    # user_manager = UserManager(db_adapter, app,  # Init Flask-User and bind to app
+    #                            register_form=MyRegisterForm,  # using a custom register form with UserProfile fields
+    #                            user_profile_view_function=user_profile_page,
+    # )
 
     # Setup WTForms CsrfProtect
     CsrfProtect(app)
@@ -78,28 +77,28 @@ def create_app(config_name):
     from app.main import main
     app.register_blueprint(main)
 
-    from app.dlb import dlb as dlb_blueprint
-    app.register_blueprint(dlb_blueprint)
-
-    from app.user import user as user_blueprint
-    app.register_blueprint(user_blueprint)
-
-    #create app directories if not exist
-    directory = app.config['DLB_UPLOAD_FOLDER']
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    directory = app.config['DLB_BACKUP_FOLDER']
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    directory = app.config['DLB_DOWNLOAD_FOLDER']
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    directory = app.config['DLB_ZRX_FOLDER']
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    # from app.dlb import dlb as dlb_blueprint
+    # app.register_blueprint(dlb_blueprint)
+    #
+    # # from app.usr import user as user_blueprint
+    # # app.register_blueprint(user_blueprint)
+    #
+    # #create app directories if not exist
+    # directory = app.config['DLB_UPLOAD_FOLDER']
+    # if not os.path.exists(directory):
+    #     os.makedirs(directory)
+    #
+    # directory = app.config['DLB_BACKUP_FOLDER']
+    # if not os.path.exists(directory):
+    #     os.makedirs(directory)
+    #
+    # directory = app.config['DLB_DOWNLOAD_FOLDER']
+    # if not os.path.exists(directory):
+    #     os.makedirs(directory)
+    #
+    # directory = app.config['DLB_ZRX_FOLDER']
+    # if not os.path.exists(directory):
+    #     os.makedirs(directory)
 
 
     return app

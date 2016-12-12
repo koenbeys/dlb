@@ -1,7 +1,7 @@
 from flask import redirect, render_template, render_template_string, Blueprint,request,url_for
 from flask_user import login_required,current_user
 from . import main
-from .forms import UserProfileForm,RoleForm
+# from .forms import UserProfileForm,RoleForm
 from app import db
 
 # The Home page is accessible to anyone
@@ -29,28 +29,6 @@ def role_page():
     # Initialize form
     form = RoleForm(request.form)
     return render_template('main/role_page.html',
-                           form=form)
-
-
-@main.route('/user/profile', methods=['GET', 'POST'])
-@login_required
-def user_profile_page():
-    # Initialize form
-    form = UserProfileForm(request.form, current_user)
-
-    # Process valid POST
-    if request.method == 'POST' and form.validate():
-        # Copy form fields to user_profile fields
-        form.populate_obj(current_user)
-
-        # Save user_profile
-        db.session.commit()
-
-        # Redirect to home page
-        return redirect(url_for('main.home_page'))
-
-    # Process GET or invalid POST
-    return render_template('main/user_profile_page.html',
                            form=form)
 
 @main.route('/info')
