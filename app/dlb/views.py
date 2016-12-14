@@ -116,7 +116,7 @@ def stationlist_page():
             return render_template( 'stationlist.html', stationList=stationList, alert=True)
 
     stationList = functions.getStationList()
-    functions.isObserver()
+    #functions.isObserver()
     if 'stationid' not in session:
         session['stationid']="-1"
         station=stationItem()

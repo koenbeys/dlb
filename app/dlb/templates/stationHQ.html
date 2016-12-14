@@ -67,7 +67,7 @@
                         </div>
                         <div class="col-sm-3">
                             <label for="observator">Observator:</label>
-                            <input type="text" class="form-control" placeholder="Who is there" id="observator" name="observator" value = "{{ form.observator.data if (form.observator.data) else ''}}">
+                            <input type="text" class="form-control" placeholder="Who is there" id="observator" name="observator" value = "{{ form.observator.data if (form.observator.data) else current_user.username}}">
                         </div>
                     </div>
                     <div class="row" style="background-color:#ebebe0">
