@@ -172,7 +172,7 @@ def stationHQ_page(stationid):
                 histo.gaugeExNumber=ostation.gaugeExNumber
                 recTs = request.form.get('recTs')
                 histo.recTs = datetime.strptime(recTs, '%d/%m/%Y %H:%M')
-                histo.operator = "me"
+                histo.operator = current_user.username
                 histo.observator = request.form.get('observator')
                 if (histo.observator == ""):
                     histo.observator = histo.operator
@@ -263,7 +263,7 @@ def stationYSI_page(stationid):
                 histo.gaugeExNumber=ostation.gaugeExNumber
                 recTs = request.form.get('recTs')
                 histo.recTs = datetime.strptime(recTs, '%d/%m/%Y %H:%M')
-                histo.operator = "me"
+                histo.operator = current_user.username
                 histo.observator = request.form.get('observator')
                 if (histo.observator == ""):
                     histo.observator = histo.operator
