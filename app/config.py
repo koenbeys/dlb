@@ -1,6 +1,6 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
-
+import logging
 
 class Config:
 
@@ -12,8 +12,13 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # Application settings
-    APP_NAME = "Adson App"
+    APP_NAME = "Enki App"
     APP_SYSTEM_ERROR_SUBJECT_LINE = APP_NAME + " system error"
+
+    ENKI_LOG_FOLDER='logs/'
+
+    ENKI_LOG_LEVEL=logging.DEBUG
+
 
     # Flask settings
     CSRF_ENABLED = True
@@ -41,7 +46,6 @@ class Config:
     USER_ENABLE_USERNAME = True  # Register and Login with username
     USER_AFTER_LOGIN_ENDPOINT = 'main.home_page'
     USER_AFTER_LOGOUT_ENDPOINT = 'main.home_page'
-
 
     DLB_UPLOAD_FOLDER = 'uploads/'
     DLB_DOWNLOAD_FOLDER = 'downloads/'
