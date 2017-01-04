@@ -6,6 +6,7 @@ from app import create_app
 from app import user
 from app import dlb
 from flask import render_template
+from lib import SetDebug,AdsVar
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 user.create_mod()
