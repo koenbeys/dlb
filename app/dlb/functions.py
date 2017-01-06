@@ -7,15 +7,15 @@ def isObserver():
 
 def getStationList():
     from .models import Stations
-    tblStations = Stations.query.filter(Stations.stationid >= 0)
+    tblStations = Stations.query.filter(Stations.stationname >= '')
 #    lstStations = []
 #    for station in tblStations:
 #        lstStations.append(getStationInfo(station.stationid))
     return tblStations
 
-def getStationInfo(stationid):
+def getStationInfo(stationname):
     from .models import Stations
-    recstation = Stations.query.filter(Stations.stationid == stationid).first()
+    recstation = Stations.query.filter(Stations.stationname == stationname).first()
     # ostation = classes.stationItem()
     # ostation.stationid = recstation.stationid
     # ostation.stationname = recstation.stationname
@@ -23,18 +23,18 @@ def getStationInfo(stationid):
     # ostation.stationExNumber = recstation.stationExNumber
     return recstation
 
-def getHistoryHQ(stationid, limit):
+def getHistoryHQ(stationname, limit):
     from .models import historyItemsHQs
-    tblHistory = historyItemsHQs.query.filter(historyItemsHQs.stationid == stationid).order_by('-id').limit(limit)
+    tblHistory = historyItemsHQs.query.filter(historyItemsHQs.stationname == stationname).order_by('-id').limit(limit)
     return tblHistory
 
-def getHistoryHQbyDates(stationid,dtfrom,dtto):
+def getHistoryHQbyDates(stationname,dtfrom,dtto):
     from datetime import datetime, timedelta
     from .models import historyItemsHQs
     dtdtfrom = datetime.strptime(dtfrom, '%d/%m/%Y')
     dtdtto = datetime.strptime(dtto, '%d/%m/%Y')
     dtdtto =dtdtto + timedelta(days=1)
-    tblHistory = historyItemsHQs.query.filter(historyItemsHQs.stationid == stationid, historyItemsHQs.recTs >= dtdtfrom, historyItemsHQs.recTs <= dtdtto).order_by('-id')
+    tblHistory = historyItemsHQs.query.filter(historyItemsHQs.stationname == stationname, historyItemsHQs.recTs >= dtdtfrom, historyItemsHQs.recTs <= dtdtto).order_by('-id')
     return tblHistory
 
 
@@ -70,18 +70,18 @@ def saveToZrxFileHQ(rec):
         f.close()
 
 
-def getHistoryYSI(stationid, limit):
+def getHistoryYSI(stationname, limit):
     from .models import historyItemsYSIs
-    tblHistory = historyItemsYSIs.query.filter(historyItemsYSIs.stationid == stationid).order_by('-id').limit(limit)
+    tblHistory = historyItemsYSIs.query.filter(historyItemsYSIs.stationname == stationname).order_by('-id').limit(limit)
     return tblHistory
 
-def getHistoryYSIbyDates(stationid,dtfrom,dtto):
+def getHistoryYSIbyDates(stationname,dtfrom,dtto):
     from datetime import datetime, timedelta
     from .models import historyItemsYSIs
     dtdtfrom = datetime.strptime(dtfrom, '%d/%m/%Y')
     dtdtto = datetime.strptime(dtto, '%d/%m/%Y')
     dtdtto =dtdtto + timedelta(days=1)
-    tblHistory = historyItemsYSIs.query.filter(historyItemsYSIs.stationid == stationid, historyItemsYSIs.recTs >= dtdtfrom, historyItemsYSIs.recTs <= dtdtto).order_by('-id')
+    tblHistory = historyItemsYSIs.query.filter(historyItemsYSIs.stationname == stationname, historyItemsYSIs.recTs >= dtdtfrom, historyItemsYSIs.recTs <= dtdtto).order_by('-id')
     return tblHistory
 
 def saveToZrxFileHQ(rec):
@@ -157,14 +157,14 @@ def loadStationListFile():
                 for line in inputFile.readlines():
                     buf = line.split(";")
                     station = classes.stationItem()
-                    station.stationid = buf[0]
+                    # station.stationid = buf[0]
                     station.stationname = buf[1]
                     station.gaugeExNumber = buf[2]
                     station.sensorExNumber = buf[2][:-1] + "s"
                     station.stationdescription = buf[3]
                     station.stationHQ = int(buf[4])
                     station.stationYSI = int(buf[5])
-                    record = Stations(stationid=station.stationid,
+                    record = Stations(  #stationid=station.stationid,
                                       sensorExNumber=station.sensorExNumber,
                                       gaugeExNumber=station.gaugeExNumber,
                                       stationname=station.stationname,

@@ -34,10 +34,10 @@
                 </thead>
                 <tbody>
                     {% for station in stationList %}
-                        <tr  class="table-row" data-href="{{ url_for('dlb.stationHQ_page', stationid=station.stationid) }}" >
+                        <tr  class="table-row" data-href="{{ url_for('dlb.stationHQ_page', stationname=station.stationname) }}" >
                             <td>{{ station.stationname }}</td>
                             <td>{{ station.stationdescription }}</td>
-                            <td style="display:none;"> {{station.stationid }}</td>
+                            <td style="display:none;"> {{station.stationname }}</td>
                             <td style="display:none;"> {{station.stationHQ }}</td>
                             <td style="display:none;"> {{station.stationYSI }}</td>
                             <td style="display:none;"> {{station.stationCTD }}</td>
@@ -120,7 +120,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="hidden" class="form-control" id="stationid" name="stationid" value="{{ station.stationid }}">
+                <input type="hidden" class="form-control" id="stationname" name="stationname" value="{{ station.stationname }}">
                 <input type="hidden" class="form-control" id="op" name="op">
                 <input type="hidden" class="form-control" id="formname" name="formname" value="stationlist">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -142,9 +142,9 @@ $(document).ready(function($){
     var oTable = $('#myTable').dataTable();
     $('#myTable').on('click', 'tr', function() {
         var oData = oTable.fnGetData(this);
-        document.getElementById("stationid").value = oData[2];
-        document.getElementById("location").value = oData[1];
         document.getElementById("code").value = oData[0];
+        document.getElementById("location").value = oData[1];
+        document.getElementById("stationname").value = oData[0];
 
         if (oData[3] == "True"){
             document.getElementById("buttonHQ").removeAttribute('disabled')

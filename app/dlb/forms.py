@@ -3,21 +3,21 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, valid
 
 
 class StationListForm(Form):
-    stationid = StringField('stationid', validators=[
+    stationname = StringField('stationname', validators=[
         validators.DataRequired('You must select a location !')])
     submit = SubmitField('Submit')
     op = StringField('op')
 
 class histoHQForm(Form):
 
-    stationid = StringField('stationid', validators=[validators.DataRequired('stationid is required')])
+    stationname = StringField('stationname', validators=[validators.DataRequired('stationname is required')])
     dtfrom = DateTimeField((u'dtfrom'), validators=[validators.data_required()], format='%d/%m/%Y')
     dtto = DateTimeField((u'dtto'), validators=[validators.data_required()], format='%d/%m/%Y')
 
 
 class StationHQForm(Form):
 
-    stationid = StringField('stationid', validators=[validators.DataRequired('stationid is required')])
+    stationname = StringField('stationname', validators=[validators.DataRequired('stationname is required')])
     #stationExNumber = StringField('stationExNumber', validators=[validators.DataRequired('stationid is required')])
     recTs = DateTimeField((u'recTs'), validators=[validators.data_required()], format='%d/%m/%Y %H:%M')
 
@@ -48,7 +48,7 @@ class StationHQForm(Form):
     #    submit = SubmitField('Submit')
 
 class StationYSIForm(Form):
-    stationid = StringField(u'stationid', validators=[validators.DataRequired('stationid is required')])
+    stationname = StringField(u'stationname', validators=[validators.DataRequired('stationname is required')])
     recTs = DateTimeField((u'recTs'), validators=[validators.data_required('recTs not valid')], format='%d/%m/%Y %H:%M')
  #   operator = StringField((u'operator'), validators=[validators.DataRequired('operator is required')])
     observator = StringField((u'observator'), validators=[validators.DataRequired('observator is required')])
@@ -71,7 +71,7 @@ class StationYSIForm(Form):
     comment = StringField((u'comment'))
 
 class histoYSIForm(Form):
-    stationid = StringField('stationid', validators=[validators.DataRequired('stationid is required')])
+    stationname = StringField('stationname', validators=[validators.DataRequired('stationname is required')])
     dtfrom = DateTimeField((u'dtfrom'), validators=[validators.data_required()], format='%d/%m/%Y')
     dtto = DateTimeField((u'dtto'), validators=[validators.data_required()], format='%d/%m/%Y')
 

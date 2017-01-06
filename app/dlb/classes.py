@@ -1,5 +1,5 @@
 class stationItem:
-    stationid = -1
+    # stationid = -1
     stationname = ""
     sensorExNumber = ""
     gaugeExNumber = ""
@@ -9,7 +9,8 @@ class stationItem:
 
 from datetime import datetime
 class historyItemHQ:
-    stationid = -1
+    # stationid = -1
+    stationname = ""
     recTs = datetime(1900,1,1)
     observator = ""
     operator = ""
@@ -33,7 +34,8 @@ class historyItemHQ:
 
 
 class historyItemYSI:
-    stationid = -1
+    # stationid = -1
+    stationname = ""
     recTs = datetime(1900,1,1)
     observator = ""
     operator = ""
