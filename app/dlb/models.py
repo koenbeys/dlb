@@ -4,7 +4,6 @@ class Stations(db.Model):
     __tablename__ = 'stations'
 
     stationname = db.Column(db.Unicode(10), primary_key=True, server_default=u'')
-    # stationid = db.Column(db.Integer(), primary_key=True)
     sensorExNumber = db.Column(db.Unicode(20), nullable=False, server_default=u'')
     gaugeExNumber = db.Column(db.Unicode(20), nullable=False, server_default=u'')
 
@@ -16,7 +15,6 @@ class Stations(db.Model):
 class historyItemsHQs(db.Model):
     __tablename__ = 'historyItemsHQ'
     id = db.Column(db.Integer, primary_key=True)
-    # stationid = db.Column(db.Integer(), nullable=False, server_default='0')
     stationname = db.Column(db.Unicode(10), nullable=False, server_default=u'')
 
     recTs =  db.Column(db.DateTime(), nullable=False, server_default='01/01/1900')
@@ -41,12 +39,10 @@ class historyItemsHQs(db.Model):
     hardwareCalibrated = db.Column(db.Boolean(), nullable=False, server_default='0')
     deltaT = db.Column(db.Integer, nullable=False, server_default='0')
     comment = db.Column(db.Unicode(255), nullable=False, server_default=u'')
-#test commit
 
 class historyItemsYSIs(db.Model):
     __tablename__ = 'historyItemsYSI'
     id = db.Column(db.Integer, primary_key=True)
-    # stationid = db.Column(db.Integer(), nullable=False, server_default='0')
     stationname = db.Column(db.Unicode(10), nullable=False, server_default=u'')
 
     recTs =  db.Column(db.DateTime(), nullable=False, server_default='01/01/1900')
