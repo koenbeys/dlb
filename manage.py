@@ -8,16 +8,21 @@ from app import dlb
 from flask import render_template
 from lib import SetDebug,AdsVar
 
+import logging
+logger = logging.getLogger("app")
+
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 user.create_mod()
 dlb.create_mod()
 
+
+logger.info("init done ")
 from app import manager
 
 if __name__ == "__main__":
     manager.run()
 
-from flask import render_template
+
 
 
 

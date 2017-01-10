@@ -1,4 +1,5 @@
 import os
+import os.path
 
 from app.config import config
 
@@ -9,7 +10,8 @@ from flask_script import Shell, Server
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from app import app, db, manager
-
+import logging.handlers
+import logging
 
 # zorgt ervoor dat model beschikbaar is van proj
 from app.dlb import models
@@ -76,6 +78,91 @@ def create_app(config_name):
 
     from app.main import main
     app.register_blueprint(main)
+
+    #
+    # Creatie Log Folder
+    #
+
+    if 'LOG_FOLDER' not in app.config:
+        app.config['LOG_FOLDER'] = os.path.join(os.getcwd(),"log")
+
+    directory = app.config['LOG_FOLDER']
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    app.config['LOG_FOLDER'] =os.path.abspath(directory)
+
+    #
+    # Creatie Log Folder, Default is debug folder = log folder
+    #
+
+    if 'LOG_DEBUG_FOLDER' not in app.config:
+        app.config['LOG_DEBUG_FOLDER'] = app.config['LOG_FOLDER']
+
+    directory = app.config['LOG_DEBUG_FOLDER']
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    app.config['LOG_DEBUG_FOLDER'] =os.path.abspath(directory)
+
+    #
+    #   init logger & default settings
+    #
+    log = logging.getLogger('app')
+
+    if 'LOG_LEVEL' not in app.config:
+        app.config['LOG_LEVEL']=logging.DEBUG
+
+    log.setLevel(app.config['LOG_LEVEL'])
+
+
+    if 'LOG_FORMATTER' not in app.config:
+        app.config['LOG_FORMATTER']=logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+    if 'LOG_ERROR_FORMATTER' not in app.config:
+        app.config['LOG_ERROR_FORMATTER']=app.config['LOG_FORMATTER']
+    if 'LOG_INFO_FORMATTER' not in app.config:
+        app.config['LOG_INFO_FORMATTER']=app.config['LOG_FORMATTER']
+    if 'LOG_DEBUG_FORMATTER' not in app.config:
+        app.config['LOG_DEBUG_FORMATTER']=logging.Formatter('%(asctime)s - %(levelno)s - %(name)s,%(module)s,%(lineno)d  - %(message)s')
+
+    #
+    #   init Error logger
+    #
+
+    if 'LOG_ERROR_FILENAME' not in app.config:
+        app.config['LOG_ERROR_FILENAME']='error.log'
+
+    fh_error = logging.FileHandler(os.path.join(app.config['LOG_FOLDER'],app.config['LOG_ERROR_FILENAME']))
+    fh_error.setFormatter(app.config['LOG_ERROR_FORMATTER'])
+    fh_error.setLevel(logging.ERROR)
+    log.addHandler(fh_error)
+    log.info("error logging set")
+
+    #
+    #   init INFO logger
+    #
+
+    if 'LOG_INFO_FILENAME' not in app.config:
+        app.config['LOG_INFO_FILENAME']='info.log'
+
+    fh_info = logging.FileHandler(os.path.join(app.config['LOG_FOLDER'],app.config['LOG_INFO_FILENAME']))
+    fh_info.setFormatter(app.config['LOG_INFO_FORMATTER'])
+    fh_info.setLevel(logging.INFO)
+    log.addHandler(fh_info)
+    log.info("info logging set")
+
+    #
+    #   init INFO logger
+    #
+
+    if 'LOG_DEBUG_FILENAME' not in app.config:
+        app.config['LOG_DEBUG_FILENAME']='debug.log'
+
+    fh_debug = logging.FileHandler(os.path.join(app.config['LOG_DEBUG_FOLDER'],app.config['LOG_DEBUG_FILENAME']))
+    fh_debug.setFormatter(app.config['LOG_DEBUG_FORMATTER'])
+    fh_debug.setLevel(logging.DEBUG)
+    log.addHandler(fh_debug)
+    log.info("debug logging set")
+
+
 
     # from app.dlb import dlb as dlb_blueprint
     # app.register_blueprint(dlb_blueprint)

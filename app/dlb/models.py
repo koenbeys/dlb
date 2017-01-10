@@ -1,6 +1,7 @@
 from app import db
-
+from . import log
 class Stations(db.Model):
+    log.debug("Stations(db.Model)")
     __tablename__ = 'stations'
 
     stationname = db.Column(db.Unicode(10), primary_key=True, server_default=u'')
@@ -13,6 +14,7 @@ class Stations(db.Model):
 
 
 class historyItemsHQs(db.Model):
+    log.debug("historyItemsHQs(db.Model)")
     __tablename__ = 'historyItemsHQ'
     id = db.Column(db.Integer, primary_key=True)
     stationname = db.Column(db.Unicode(10), nullable=False, server_default=u'')
@@ -41,6 +43,7 @@ class historyItemsHQs(db.Model):
     comment = db.Column(db.Unicode(255), nullable=False, server_default=u'')
 
 class historyItemsYSIs(db.Model):
+    log.debug("historyItemsYSIs(db.Model)")
     __tablename__ = 'historyItemsYSI'
     id = db.Column(db.Integer, primary_key=True)
     stationname = db.Column(db.Unicode(10), nullable=False, server_default=u'')

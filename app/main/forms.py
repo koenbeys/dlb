@@ -2,9 +2,6 @@ from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField,validators,SelectField
 
 
-
-
-
 class RoleForm(Form):
         myChoices = (("koen","koen"),("piet","piet"),("jan","jaan")) # number of choices
         myField = SelectField(u'Field name', choices=myChoices, validators=[validators.DataRequired()])

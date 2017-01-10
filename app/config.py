@@ -1,6 +1,7 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 import logging
+import logging.handlers
 
 class Config:
 
@@ -15,9 +16,12 @@ class Config:
     APP_NAME = "Enki App"
     APP_SYSTEM_ERROR_SUBJECT_LINE = APP_NAME + " system error"
 
-    ENKI_LOG_FOLDER='logs/'
+#   logging
 
-    ENKI_LOG_LEVEL=logging.DEBUG
+    # LOG_FOLDER='logs2'
+    LOG_LEVEL = logging.DEBUG
+    LOG_FORMATTER   = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+    LOG_DEBUG_FORMATTER=logging.Formatter('%(asctime)s - %(levelno)s - %(name)s,%(module)s,%(lineno)d  - %(message)s')
 
 
     # Flask settings

@@ -1,14 +1,19 @@
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, validators, DateField, DateTimeField, TextField, IntegerField, FloatField
+from . import log
 
 
 class StationListForm(Form):
+
+    log.debug('class StationListForm(Form)')
+
     stationname = StringField('stationname', validators=[
         validators.DataRequired('You must select a location !')])
     submit = SubmitField('Submit')
     op = StringField('op')
 
 class histoHQForm(Form):
+    log.debug('class histoHQForm(Form)')
 
     stationname = StringField('stationname', validators=[validators.DataRequired('stationname is required')])
     dtfrom = DateTimeField((u'dtfrom'), validators=[validators.data_required()], format='%d/%m/%Y')
@@ -16,6 +21,7 @@ class histoHQForm(Form):
 
 
 class StationHQForm(Form):
+    log.debug('class StationHQForm(Form)')
 
     stationname = StringField('stationname', validators=[validators.DataRequired('stationname is required')])
     #stationExNumber = StringField('stationExNumber', validators=[validators.DataRequired('stationid is required')])
@@ -48,6 +54,8 @@ class StationHQForm(Form):
     #    submit = SubmitField('Submit')
 
 class StationYSIForm(Form):
+    log.debug('class StationYSIForm(Form)')
+
     stationname = StringField(u'stationname', validators=[validators.DataRequired('stationname is required')])
     recTs = DateTimeField((u'recTs'), validators=[validators.data_required('recTs not valid')], format='%d/%m/%Y %H:%M')
  #   operator = StringField((u'operator'), validators=[validators.DataRequired('operator is required')])
@@ -71,6 +79,7 @@ class StationYSIForm(Form):
     comment = StringField((u'comment'))
 
 class histoYSIForm(Form):
+    log.debug('class histoYSIForm(Form)')
     stationname = StringField('stationname', validators=[validators.DataRequired('stationname is required')])
     dtfrom = DateTimeField((u'dtfrom'), validators=[validators.data_required()], format='%d/%m/%Y')
     dtto = DateTimeField((u'dtto'), validators=[validators.data_required()], format='%d/%m/%Y')

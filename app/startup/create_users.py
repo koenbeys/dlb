@@ -19,9 +19,9 @@ def create_users():
     role = Role.query.filter(Role.name == 'admin').first()
 
     # Add users
-    user = User.query.filter(User.email == "koen.beys@mow.vlaanderen.be").first()
+    user = User.query.filter(User.email == u"koen.beys@mow.vlaanderen.be").first()
     if not user:
-        user = User(email="koen.beys@mow.vlaanderen.be",
+        user = User(email=u"koen.beys@mow.vlaanderen.be",
                     username=u"appadmin",
                     first_name=u"Application admin",
                     last_name=u"Admin",
@@ -46,9 +46,9 @@ def create_users():
     role = Role.query.filter(Role.name == 'controler').first()
 
     # Add users
-    user = User.query.filter(User.email == "appuser@mow.vlaanderen.be").first()
+    user = User.query.filter(User.email == u"appuser@mow.vlaanderen.be").first()
     if not user:
-        user = User(email="appuser@mow.vlaanderen.be",
+        user = User(email=u"appuser@mow.vlaanderen.be",
                     username="appuser",
                     first_name=u"Application User",
                     last_name=u"User",
@@ -72,9 +72,9 @@ def create_users():
     role = Role.query.filter(Role.name == 'validator').first()
 
     # Add users
-    user = User.query.filter(User.email == "appvalid@mow.vlaanderen.be").first()
+    user = User.query.filter(User.email == u"appvalid@mow.vlaanderen.be").first()
     if not user:
-        user = User(email="appvalid@mow.vlaanderen.be",
+        user = User(email=u"appvalid@mow.vlaanderen.be",
                     username="appvalid",
                     first_name=u"Application Valid",
                     last_name=u"Valid",

@@ -1,11 +1,11 @@
+import os
 from flask import redirect, render_template, request,url_for, flash
 from flask_user import login_required,current_user,roles_accepted
-from . import dlb
+from . import dlb,log
 from .forms import StationListForm, TestForm, StationHQForm, StationYSIForm, histoHQForm, histoYSIForm
 
 from app import app,db
 from . import functions
-from app.config import config
 
 from datetime import datetime
 
@@ -17,10 +17,12 @@ from datetime import datetime
 @dlb.route('/user')
 @login_required  # Limits access to authenticated users
 def user_page():
+    log.debug('start def user_page')
     return render_template('main/user_page.html')
 
 @dlb.route('/oproep')
 def oproep_page():
+    log.debug('start def oproep_page')
     return render_template('main/oproep.html')
 
 
@@ -36,7 +38,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-import os
+
 # We'll render HTML templates and access data sent by POST
 # using the request object from flask. Redirect and url_for
 # will be used to redirect the user once the upload is done
@@ -47,8 +49,15 @@ import os
 @dlb.route('/upload', methods=['POST'])
 def upload():
     from flask import flash
+
+    log.debug('start def upload')
+
     # Get the name of the uploaded file
     file = request.files['file']
+
+    log.debug('start procedure upload')
+
+
     # Check if the file is one of the allowed types/extensions
     if (file.filename.lower() != ""):
         if allowed_file(file.filename):
@@ -89,18 +98,25 @@ def uploadFile_page():
 
 def stationlist_page():
     from flask import session
-    from classes import stationItem
+    from .classes import stationItem
+
     form = StationListForm(request.form)
+    log.debug("start stationlist_page")
+
     if request.method == 'POST':
+        log.debug("request.method == 'POST")
         if form.validate():
-            print "StationListForm : ok"
+
+            log.debug( "StationListForm : ok")
+
             stationname = request.form.get('stationname')
             session['stationname'] = stationname
 
             isValidator = False
 
 
-            print stationname
+            log.debug( "stationname = %s", stationname)
+
             op = request.form.get('op')
             if (op == "HQ"):
                 return redirect(url_for('.stationHQ_page',stationname=stationname))
@@ -111,7 +127,7 @@ def stationlist_page():
             elif (op == "histoYSI"):
                 return redirect(url_for('.histoYSI_page', stationname=stationname))
         else:
-            print "StationListForm : not ok validation!!!!!"
+            log.debug("StationListForm : not ok validation!!!!!")
             stationList = functions.getStationList()
             if 'stationname' not in session:
                 session['stationname'] = "empty"
@@ -119,6 +135,7 @@ def stationlist_page():
             else:
                 station = functions.getStationInfo(session['stationname'])
 
+            log.debug("render_template 1")
             return render_template( 'stationlist.html', stationList=stationList, station=station, alert=True)
 
     stationList = functions.getStationList()
@@ -129,6 +146,7 @@ def stationlist_page():
     else:
         station = functions.getStationInfo(session['stationname'])
 
+    log.debug("render_template 2")
     return render_template('stationlist.html', stationList=stationList, station=station, alert=False)
 
 
@@ -164,13 +182,16 @@ def stationHQ_page(stationname):
     from app import app, db
     from .models import historyItemsHQs
     from flask import  session
-    print "stationHQ page..."
+
+    log.debug("stationHQ page...")
 
     form = StationHQForm(request.form)
     if request.form.get('formname')=='stationHQ':
         if request.method == 'POST':
             if form.validate():
-                print "StationHQForm : ok"
+
+                log.debug("StationHQForm : ok")
+
                 histo = historyItemsHQs()
                 histo.stationname = request.form.get('stationname')
                 ostation = functions.getStationInfo(histo.stationname)
@@ -184,6 +205,7 @@ def stationHQ_page(stationname):
                     histo.observator = histo.operator
                 sensorTs = request.form.get('sensorTs')
                 histo.sensorTs = datetime.strptime(sensorTs, '%d/%m/%Y %H:%M')
+                print request.form.get('sensorValue')
                 histo.sensorValue = request.form.get('sensorValue')
                 gaugeTs = request.form.get('gaugeTs')
                 histo.gaugeTs = datetime.strptime(gaugeTs, '%d/%m/%Y %H:%M')
@@ -202,16 +224,20 @@ def stationHQ_page(stationname):
                 histo.hardwareConfigured = request.form.get('hardwareConfigured')
 
                 db.session.add(histo)
+
+                log.debug("StationHQForm : before commit")
                 db.session.commit()
+                log.debug("StationHQForm : after commit")
+
                 flash("HQ logbook entry saved !", "success")
                 functions.saveToZrxFileHQ(histo)
-                print "historyItemsHQs inserted"
+                log.info( "historyItemsHQs inserted")
                 stationList = functions.getStationList()
                 station = functions.getStationInfo(session['stationname'])
 
                 return render_template('stationlist.html', stationList=stationList, station=station)
             else:
-                print "StationHQForm : NOT ok"
+                log.debug( "StationHQForm : NOT ok" )
                 functions.flash_errors(form)
                 ostation = functions.getStationInfo(stationname)
 
@@ -225,12 +251,12 @@ def stationHQ_page(stationname):
 
 @dlb.route('/histoYSI/<stationname>', methods=['GET', 'POST'])
 def histoYSI_page(stationname):
-    print "histoYSI_page page..."
+    log.debug("def histoYSI_page page... : %s ",stationname)
     form = histoYSIForm(request.form)
     if request.form.get('formname')=='histoYSI':
         if request.method == 'POST':
             if form.validate():
-                print "histoYSI_page : ok"
+                log.debug( "histoYSI_page : ok")
                 stationname = request.form.get('stationname')
                 dtfrom = request.form.get('dtfrom')
                 dtto = request.form.get('dtto')
@@ -240,7 +266,7 @@ def histoYSI_page(stationname):
                                        alert=False)
 
             else:
-                print "histoUSI_page : NOT ok"
+                log.debug( "histoUSI_page : NOT ok")
                 stationid = request.form.get('stationname')
 
     lstHistory = functions.getHistoryYSI(stationname, app.config['DLB_NB_HISTO_HISTORY_ITEMS'])
@@ -252,6 +278,7 @@ def histoYSI_page(stationname):
 
 @dlb.route('/stationYSI/<stationname>', methods=['GET', 'POST'])
 def stationYSI_page(stationname):
+    log.debug("def stationYSI_page page... : %s ",stationname)
     from app import app, db
     from .models import historyItemsYSIs
     from flask import session
@@ -261,7 +288,7 @@ def stationYSI_page(stationname):
         if request.method == 'POST':
 
             if form.validate():
-                print "StationYSIForm : ok"
+                log.debug ("StationYSIForm : ok")
                 histo = historyItemsYSIs()
                 histo.stationname = request.form.get('stationname')
                 ostation = functions.getStationInfo(histo.stationname)
@@ -297,13 +324,13 @@ def stationYSI_page(stationname):
                 db.session.add(histo)
                 db.session.commit()
                 flash("Phys.Par. logbook entry saved !","success")
-                print "historyItemsYSIs inserted"
-                print stationname
+                log.info("historyItemsYSIs inserted , stationname = %s",stationname)
+
                 stationList = functions.getStationList()
                 station = functions.getStationInfo(session['stationname'])
                 return render_template('stationlist.html', stationList=stationList, station=station)
             else:
-                print "StationYSIForm : NOT ok"
+                log.debug( "StationYSIForm : NOT ok" )
                 ostation = functions.getStationInfo(stationname)
                 lstHistory = functions.getHistoryYSI(stationname, app.config['DLB_NB_STATION_HISTORY_ITEMS'])
                 functions.flash_errors(form)
@@ -316,7 +343,7 @@ def stationYSI_page(stationname):
 
 @dlb.route('/test', methods=['GET', 'POST'])
 def test_page():
-
+    log.debug(test_page)
     txt = "origin"
     return render_template('test.html', txt=txt)
 

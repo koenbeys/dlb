@@ -1,11 +1,12 @@
-
 from . import classes
-
+from . import log
 
 def isObserver():
+    log.debug('def isObserver()')
     return False
 
 def getStationList():
+    log.debug('def getStationList()')
     from .models import Stations
     tblStations = Stations.query.filter(Stations.stationname >= '')
 #    lstStations = []
@@ -14,6 +15,7 @@ def getStationList():
     return tblStations
 
 def getStationInfo(stationname):
+    log.debug('def getStationInfo(stationname) : %s' , stationname)
     from .models import Stations
     recstation = Stations.query.filter(Stations.stationname == stationname).first()
     # ostation = classes.stationItem()
@@ -24,11 +26,13 @@ def getStationInfo(stationname):
     return recstation
 
 def getHistoryHQ(stationname, limit):
+    log.debug('def getHistoryHQ(stationname, limit) , %s , %d' , stationname,limit)
     from .models import historyItemsHQs
     tblHistory = historyItemsHQs.query.filter(historyItemsHQs.stationname == stationname).order_by('-id').limit(limit)
     return tblHistory
 
 def getHistoryHQbyDates(stationname,dtfrom,dtto):
+    log.debug('def getHistoryHQbyDates(stationname,dtfrom,dtto) : %s , %s, %s ' , stationname,dtfrom,dtto)
     from datetime import datetime, timedelta
     from .models import historyItemsHQs
     dtdtfrom = datetime.strptime(dtfrom, '%d/%m/%Y')
@@ -39,6 +43,7 @@ def getHistoryHQbyDates(stationname,dtfrom,dtto):
 
 
 def saveToZrxFileHQ(rec):
+    log.debug('def saveToZrxFileHQ()')
     #will write "historyItemsHQs" record into "rec.id".zrx in "DOWNLOAD_FOLDER"
     import os
     from app import app
@@ -71,11 +76,13 @@ def saveToZrxFileHQ(rec):
 
 
 def getHistoryYSI(stationname, limit):
+    log.debug('def getHistoryYSI(stationname, limit) , %s , %d' , stationname,limit)
     from .models import historyItemsYSIs
     tblHistory = historyItemsYSIs.query.filter(historyItemsYSIs.stationname == stationname).order_by('-id').limit(limit)
     return tblHistory
 
 def getHistoryYSIbyDates(stationname,dtfrom,dtto):
+    log.debug('def getHistoryYSIbyDates(stationname,dtfrom,dtto) : %s , %s, %s ' , stationname,dtfrom,dtto)
     from datetime import datetime, timedelta
     from .models import historyItemsYSIs
     dtdtfrom = datetime.strptime(dtfrom, '%d/%m/%Y')
@@ -85,6 +92,8 @@ def getHistoryYSIbyDates(stationname,dtfrom,dtto):
     return tblHistory
 
 def saveToZrxFileHQ(rec):
+    log.debug('def saveToZrxFileHQ(rec)')
+
     #will write "historyItemsHQs" record into "rec.id".zrx in "DOWNLOAD_FOLDER"
     import os
     from app import app
@@ -103,6 +112,7 @@ def saveToZrxFileHQ(rec):
         f.close()
 
 def checkAndLoadFile(filename):
+    log.debug('def checkAndLoadFile(filename) %s ', filename)
     from app import app
     from flask import flash
     import os
@@ -118,6 +128,7 @@ def checkAndLoadFile(filename):
 
 
 def loadStationListFile():
+    log.debug('def loadStationListFile()')
     from flask import flash
     from app import app, db
     from .models import Stations
@@ -249,6 +260,7 @@ def loadStationListFile():
 
 
 def flash_errors(form):
+    log.debug('def flash_errors(form)')
     from flask import flash
     for field, errors in form.errors.items():
         for error in errors:
