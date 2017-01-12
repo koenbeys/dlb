@@ -36,7 +36,7 @@ from . import classes
 def create_mod():
     # from app import app
     # log.setLevel(app.config['LOG_LEVEL'])
-    log.debug('start procedure')
+    log.debug('start procedure create_mod')
     # Setup dlb to handle user account related forms
 
     from app import app, db
@@ -71,4 +71,4 @@ def create_mod():
         log.info("Create directory %s",directory)
 
     log.debug('finish checking directory & creatie')
-    log.debug('end procedure')
+    log.debug('end procedure create_mod')

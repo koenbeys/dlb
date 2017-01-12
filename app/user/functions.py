@@ -1,3 +1,12 @@
+
+def is_safe_url(target):
+    from flask import request
+    from flask_admin._compat import urljoin, urlparse, iteritems
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return (test_url.scheme in ('http', 'https') and
+            ref_url.netloc == test_url.netloc)
+
 def getUserList():
     from .models import User
     tblUsers = User.query.filter(User.id >= 0)

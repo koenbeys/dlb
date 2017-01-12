@@ -21,7 +21,7 @@ class Config:
     # LOG_FOLDER='logs2'
     LOG_LEVEL = logging.DEBUG
     LOG_FORMATTER   = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
-    LOG_DEBUG_FORMATTER=logging.Formatter('%(asctime)s - %(levelno)s - %(name)s,%(module)s,%(lineno)d  - %(message)s')
+    # LOG_DEBUG_FORMATTER=logging.Formatter('%(asctime)s - %(levelno)s - %(name)s,%(module)s,%(lineno)d  - %(message)s')
 
 
     # Flask settings

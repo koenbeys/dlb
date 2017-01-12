@@ -1,8 +1,14 @@
 from flask_wtf import Form
-from wtforms import StringField, SubmitField, validators, IntegerField, BooleanField
+from wtforms import StringField, SubmitField, validators, IntegerField, BooleanField,PasswordField
 from flask_user.forms import RegisterForm
 
 #    , DateField, DateTimeField, TextField FloatField, PasswordField,
+
+
+class LoginForm(Form):
+    username = StringField('User--', validators=[validators.DataRequired()])
+    password = PasswordField('Password', validators=[validators.DataRequired()])
+
 
 # Define the User profile form
 class UserProfileForm(Form):

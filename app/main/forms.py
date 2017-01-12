@@ -15,8 +15,3 @@ class RoleForm(Form):
 '''
 
 
-'''
-class LoginForm(Form):
-    username = StringField('User', validators=[validators.DataRequired(), Length(1, 64)])
-    password = PasswordField('Password', validators=[validators.DataRequired()])
-'''

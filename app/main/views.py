@@ -1,4 +1,4 @@
-from flask import redirect, render_template, render_template_string, Blueprint,request,url_for
+from flask import redirect, render_template, render_template_string, Blueprint,request,url_for,session
 from flask_user import login_required,current_user
 from . import main
 from . import log
@@ -18,7 +18,7 @@ def page_not_found(e):
     from inspect import stack
     # print "-----------------> ", stack()[0][3], "  from   ", stack()[1][3]
     log.debug("start page_not_found %s from %s",stack()[0][3],stack()[1][3])
-    return render_template('common/404.html'), 404
+    return render_template('main/404.html'), 404
 
 @main.app_errorhandler(500)
 def internal_server_error(e):

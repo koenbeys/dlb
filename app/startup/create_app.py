@@ -13,6 +13,7 @@ from app import app, db, manager
 import logging.handlers
 import logging
 
+
 # zorgt ervoor dat model beschikbaar is van proj
 from app.dlb import models
 
@@ -35,6 +36,18 @@ def create_app(config_name):
 
     # ***** Initialize app config settings *****
     # Read common settings from 'app/config.py' file
+
+    from flask_login import current_user
+
+    class AddUsername2Log(logging.Filter):
+        def filter(self, record):
+            # from flask_login import current_user
+            try:
+                record.username = current_user.username
+            except:
+                record.username = "na"
+            #
+            return True
 
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
@@ -121,7 +134,7 @@ def create_app(config_name):
     if 'LOG_INFO_FORMATTER' not in app.config:
         app.config['LOG_INFO_FORMATTER']=app.config['LOG_FORMATTER']
     if 'LOG_DEBUG_FORMATTER' not in app.config:
-        app.config['LOG_DEBUG_FORMATTER']=logging.Formatter('%(asctime)s - %(levelno)s - %(name)s,%(module)s,%(lineno)d  - %(message)s')
+        app.config['LOG_DEBUG_FORMATTER']=logging.Formatter('%(asctime)s - %(levelno)s - %(username)s:%(thread)d - %(name)s,%(module)s,%(lineno)d  - %(message)s')
 
     #
     #   init Error logger
@@ -157,35 +170,14 @@ def create_app(config_name):
         app.config['LOG_DEBUG_FILENAME']='debug.log'
 
     fh_debug = logging.FileHandler(os.path.join(app.config['LOG_DEBUG_FOLDER'],app.config['LOG_DEBUG_FILENAME']))
+    fh_debug.addFilter(AddUsername2Log())
     fh_debug.setFormatter(app.config['LOG_DEBUG_FORMATTER'])
     fh_debug.setLevel(logging.DEBUG)
     log.addHandler(fh_debug)
     log.info("debug logging set")
 
-
-
-    # from app.dlb import dlb as dlb_blueprint
-    # app.register_blueprint(dlb_blueprint)
-    #
-    # # from app.usr import user as user_blueprint
-    # # app.register_blueprint(user_blueprint)
-    #
-    # #create app directories if not exist
-    # directory = app.config['DLB_UPLOAD_FOLDER']
-    # if not os.path.exists(directory):
-    #     os.makedirs(directory)
-    #
-    # directory = app.config['DLB_BACKUP_FOLDER']
-    # if not os.path.exists(directory):
-    #     os.makedirs(directory)
-    #
-    # directory = app.config['DLB_DOWNLOAD_FOLDER']
-    # if not os.path.exists(directory):
-    #     os.makedirs(directory)
-    #
-    # directory = app.config['DLB_ZRX_FOLDER']
-    # if not os.path.exists(directory):
-    #     os.makedirs(directory)
+    from app.main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
 
 
     return app

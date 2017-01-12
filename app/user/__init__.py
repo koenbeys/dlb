@@ -34,14 +34,12 @@ from . import views
 
 def create_mod():
 
-    log.debug('start procedure')
+    log.debug('start procedure create_mod')
 
     from .models import User
     from .forms import MyRegisterForm
     from .views import user_profile_page
     from app import app, db
-
-    log.debug('start procedure')
 
     # Blueprint registratie user_blueprint
 
@@ -58,4 +56,4 @@ def create_mod():
                                user_profile_view_function=user_profile_page,
                            )
     log.debug('Setup Flask-User to handle user account related forms')
-    log.debug('end procedure')
+    log.debug('end procedure create_mod')

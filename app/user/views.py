@@ -1,34 +1,56 @@
 from flask import redirect, render_template, request,url_for, flash
 from flask_user import login_required,current_user
+from flask_login import login_user,abort
+from .functions import is_safe_url
 from . import user
-from .forms import userListForm,userdetailForm
+from .forms import userListForm,userdetailForm,LoginForm
 from app import app,db
 from . import functions
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # Here we use a class of some kind to represent and validate our
+    # client-side form data. For example, WTForms is a library that will
+    # handle this for us, and we use a custom LoginForm to validate.
+    form = LoginForm()
+    if form.validate_on_submit():
+        # Login and validate the user.
+        # user should be an instance of your `User` class
+        login_user(user)
 
+        flash('Logged in successfully.!!!')
 
+        next = request.args.get('next')
+        # is_safe_url should check if the url is safe for redirects.
+        # See http://flask.pocoo.org/snippets/62/ for an example.
+        if not is_safe_url(next):
+            return abort(400)
 
-@user.route('/userList', methods=['GET', 'POST'])
-def userList_page():
-    form = userListForm(request.form)
-    if request.method == 'POST':
-        if form.validate():
-            print "Userlistform : ok"
-            userid1 = request.form.get('userid')
-            print userid1
-            if (int(userid1) > 0):
-            #user = functions.getUserDetail(userid)
-                return redirect(url_for('user.userdetail_page', userid = userid1))
-            else:
-                return redirect(url_for('user.newuser_page'))
-        else:
-            print "Userlistform : not ok"
-            userList = functions.getUserList()
-            return render_template( 'userlist.html', tableList=userList, alert=True)
+        return redirect(next or url_for('index'))
+    return render_template('login.html', form=form)
 
-    userList = functions.getUserList()
-    print "oooo"
-    return render_template('userList.html', tableList=userList, alert=False)
+#
+# @user.route('/userList', methods=['GET', 'POST'])
+# def userList_page():
+#     form = userListForm(request.form)
+#     if request.method == 'POST':
+#         if form.validate():
+#             print "Userlistform : ok"
+#             userid1 = request.form.get('userid')
+#             print userid1
+#             if (int(userid1) > 0):
+#             #user = functions.getUserDetail(userid)
+#                 return redirect(url_for('user.userdetail_page', userid = userid1))
+#             else:
+#                 return redirect(url_for('user.newuser_page'))
+#         else:
+#             print "Userlistform : not ok"
+#             userList = functions.getUserList()
+#             return render_template( 'userlist.html', tableList=userList, alert=True)
+#
+#     userList = functions.getUserList()
+#     print "oooo"
+#     return render_template('userList.html', tableList=userList, alert=False)
 
 @user.route('/newuser', methods=['GET', 'POST'])
 def newuser_page():
