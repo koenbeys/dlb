@@ -35,15 +35,12 @@
                     <li><a href="{{ url_for('dlb.uploadFile_page') }}">Upload file</a></li>
                 {% endif %}
                 {% if current_user.has_role('admin') %}
-                    <li><a href="{{ url_for('user.userList_page') }}">Users management</a></li>
+
                     <li><a href="{{ url_for('dlb.test_page') }}">Test page</a></li>
                 {% endif %}
             {% endif %}
 
-            <!--<li><a href="{{ url_for('main.info_page') }}">info</a></li> -->
 
-
-            <!--<li><a href="{{ url_for('user.newuser_page') }}">New user</a></li>-->
         </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}
