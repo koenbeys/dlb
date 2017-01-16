@@ -38,10 +38,18 @@
     {% block footer -%}
     <br/>
     <hr class="no-margins"/>
-    <div id="footer-div" class="clearfix with-margins">
-        <div class="pull-left">WL v0.01</div>
-        <div class="pull-right">&copy; 2016 wl</div>
-    </div>
+    <div class="container">
+        <div id="footer-div" class="clearfix with-margins">
+
+            {% if current_user.is_authenticated %}
+                    <div class="pull-left">WL v0.01    {{ current_user.first_name }}  {{ current_user.last_name }} </div>
+            {% else %}
+                <div class="pull-left">WL v0.01</div>
+            {% endif %}
+
+            <div class="pull-right">&copy; 2016 wl</div>
+        </div>
+     </div>
     {%- endblock footer %}
 
     {% block scripts %}
