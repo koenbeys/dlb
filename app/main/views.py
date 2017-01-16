@@ -12,6 +12,7 @@ from app import db
 # The Home page is accessible to anyone
 @main.route('/')
 def home_page():
+    # print current_user.__dict__
     log.debug("start def home_page")
     return render_template('home_page.html')
 
