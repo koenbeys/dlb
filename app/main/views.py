@@ -14,7 +14,7 @@ from app import db
 def home_page():
     # print current_user.__dict__
     log.debug("start def home_page")
-    return render_template('home_page.html')
+    return render_template('main/home_page.html')
 
 @main.app_errorhandler(404)
 def page_not_found(e):

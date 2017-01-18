@@ -35,7 +35,7 @@
                     <li><a href="{{ url_for('dlb.uploadFile_page') }}">Upload file</a></li>
                 {% endif %}
                 {% if current_user.has_role('admin') %}
-
+                    <li><a href="{{ url_for('user.userList_page') }}">Users management</a></li>
                     <li><a href="{{ url_for('dlb.test_page') }}">Test page</a></li>
                 {% endif %}
             {% endif %}

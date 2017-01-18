@@ -153,7 +153,8 @@ def stationlist_page():
 
 @dlb.route('/histoHQ/<stationname>', methods=['GET', 'POST'])
 def histoHQ_page(stationname):
-    print "histoHQ_page page..."
+    log.debug('start def histoHQ_page')
+
     form = histoHQForm(request.form)
     if request.form.get('formname')=='histoHQ':
         if request.method == 'POST':
@@ -179,6 +180,7 @@ def histoHQ_page(stationname):
 
 @dlb.route('/stationHQ/<stationname>', methods=['GET', 'POST'])
 def stationHQ_page(stationname):
+    log.debug('start def stationHQ_page')
     from app import app, db
     from .models import historyItemsHQs
     from flask import  session

@@ -1,13 +1,17 @@
 
-def is_safe_url(target):
-    from flask import request
-    from flask_admin._compat import urljoin, urlparse, iteritems
-    ref_url = urlparse(request.host_url)
-    test_url = urlparse(urljoin(request.host_url, target))
-    return (test_url.scheme in ('http', 'https') and
-            ref_url.netloc == test_url.netloc)
+from . import log
+
+#
+# def is_safe_url(target):
+#     from flask import request
+#     from flask_admin._compat import urljoin, urlparse, iteritems
+#     ref_url = urlparse(request.host_url)
+#     test_url = urlparse(urljoin(request.host_url, target))
+#     return (test_url.scheme in ('http', 'https') and
+#             ref_url.netloc == test_url.netloc)
 
 def getUserList():
+    log.debug('def getStationList()')
     from .models import User
     tblUsers = User.query.filter(User.id >= 0)
     #    lstStations = []
@@ -16,6 +20,7 @@ def getUserList():
     return tblUsers
 
 def getUserDetail(id):
+    log.debug('def getUserDetail()')
     from .models import User
     if (id > -1):
         cuser = User.query.filter(User.id == id).first()
@@ -32,6 +37,7 @@ def getUserDetail(id):
     return cuser
 
 def setUser(id, username, first_name, last_name, email, gsmnr, active):
+    log.debug('def setUser()')
     from .models import User
     from app import app, db
     if (int(id) == -1):
@@ -53,6 +59,7 @@ def setUser(id, username, first_name, last_name, email, gsmnr, active):
     return cuser.id
 
 def getUserRoles(id):
+    log.debug('def getUserRoles()')
     from .models import UsersRoles, Role
     tblRoleDescs = []
     tblRole = Role.query.filter(Role.id >= 0)
@@ -70,6 +77,7 @@ def getUserRoles(id):
     return tblRoleDescs
 
 def setUserRoles(userid,newRoles):
+    log.debug('def setUserRoles()')
     from .models import UsersRoles, Role
     from app import app, db
     print userid
