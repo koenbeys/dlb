@@ -38,12 +38,24 @@ def userList_page():
         if form.validate():
             print "Userlistform : ok"
             userid1 = request.form.get('userid')
+            op = request.form.get('op')
             print userid1
-            if (int(userid1) > 0):
-            #user = functions.getUserDetail(userid)
-                return redirect(url_for('user.userdetail_page', userid = userid1))
-            else:
+            print op
+            if (op == "new"):
                 return redirect(url_for('user.newuser_page'))
+            else:
+                if (op == "edit"):
+                    return redirect(url_for('user.userdetail_page', userid=userid1))
+                else:
+                    # should be page for password update
+                    return redirect(url_for('user.userdetail_page', userid=userid1))
+
+            #
+            # if (int(userid1) > 0):
+            # #user = functions.getUserDetail(userid)
+            #     return redirect(url_for('user.userdetail_page', userid = userid1))
+            # else:
+            #     return redirect(url_for('user.newuser_page'))
         else:
             print "Userlistform : not ok"
             userList = functions.getUserList()

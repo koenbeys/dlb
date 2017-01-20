@@ -67,12 +67,15 @@
                     <div class="form-group">
                         <button type="button" class="btn btn-primary btn-lg" value="HQ" id="editbutton" disabled onclick="my_submit('edit');">Edit</button>
                         <button type="button" class="btn .btn-warning btn-lg" value="HQ" id="newbutton"  onclick="my_submit('new');">New</button>
+                        <button type="button" class="btn .btn-warning btn-lg" value="HQ" id="pwdbutton"  onclick="my_submit('pwd');">Pwd</button>
+
                     </div>
                 </div>
             </div>
             <div>
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <input type="hidden" name="id" name="op"/>
+                <input type="hidden" name="id" id="id"/>
+                <input type="hidden" name="op" id="op"/>
             </div>
         </div>
     </body>
@@ -96,6 +99,7 @@ $(document).ready(function($){
         if (op == "new"){
             document.getElementById("userid").value = -1
         }
+        document.getElementById("op").value = op
         //alert("Submit")
         $("#myform").submit()
 
