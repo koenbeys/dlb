@@ -48,6 +48,7 @@ def userList_page():
                     return redirect(url_for('user.userdetail_page', userid=userid1))
                 else:
                     # should be page for password update
+                    
                     return redirect(url_for('user.userdetail_page', userid=userid1))
         else:
             print "Userlistform : not ok"
