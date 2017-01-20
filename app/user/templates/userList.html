@@ -16,7 +16,7 @@
         <div class="container">
             {% if alert  %}
                 <div class="alert alert-info">
-                    <strong>Info!</strong> You must select a location.
+                    <strong>Info!</strong> You must select a User.
                 </div>
             {% else %}
                 <div class="row header" style="text-align:center;color:green">
@@ -65,14 +65,17 @@
                </div>
                <div class="col-xs-6">
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary btn-lg" value="HQ" id="editbutton" disabled onclick="my_submit('edit');">Edit</button>
-                        <button type="button" class="btn .btn-warning btn-lg" value="HQ" id="newbutton"  onclick="my_submit('new');">New</button>
+                        <button type="button" class="btn .btn-primary btn-lg"  value="ED" id="editbutton" disabled onclick="my_submit('edit');">Edit</button>
+                        <button type="button" class="btn .btn-warning btn-lg" value="NW" id="newbutton"  onclick="my_submit('new');">New</button>
+                        <button type="button" class="btn .btn-warning btn-lg" value="PW" id="pwdbutton"  onclick="my_submit('pwd');">Pwd</button>
                     </div>
                 </div>
             </div>
             <div>
+
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <input type="hidden" name="id" name="op"/>
+                <input type="hidden" name="id" name="id"/>
+                <input type="hidden" name="op" name="op"/>
             </div>
         </div>
     </body>
@@ -96,6 +99,7 @@ $(document).ready(function($){
         if (op == "new"){
             document.getElementById("userid").value = -1
         }
+        if (
         //alert("Submit")
         $("#myform").submit()
 

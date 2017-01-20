@@ -27,7 +27,7 @@ class userListForm(Form):
     userid = IntegerField('userid') #, validators=[
         #validators.DataRequired('id is required')])
     # print "valid"
-    submit = SubmitField('Submit')
+    submit = SubmitField('')
 
 class userdetailForm(Form):
     log.debug('start class userdetailForm')

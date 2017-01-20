@@ -34,13 +34,16 @@ from . import functions
 def userList_page():
     log.debug('start def userList_page')
     form = userListForm(request.form)
+
+    print request.form.__dict__
+    print form.validate_on_submit(),form.submit.data
     if request.method == 'POST':
         if form.validate():
-            print "Userlistform : ok"
+            log.debug('Userlistform : ok')
             userid1 = request.form.get('userid')
-            print userid1
+            # log.debug("user id = %d",userid1)
+
             if (int(userid1) > 0):
-            #user = functions.getUserDetail(userid)
                 return redirect(url_for('user.userdetail_page', userid = userid1))
             else:
                 return redirect(url_for('user.newuser_page'))
