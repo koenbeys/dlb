@@ -74,7 +74,7 @@
             </div>
             <div>
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <input type="hidden" name="id" id="id"/>
+
                 <input type="hidden" name="op" id="op"/>
             </div>
         </div>
@@ -82,7 +82,6 @@
 </form>
 <script>
 $(document).ready(function($){
-    //alert("oo")
     var oTable = $('#myTable').dataTable();
     $('#myTable').on('click', 'tr', function() {
         var oData = oTable.fnGetData(this);
@@ -94,13 +93,11 @@ $(document).ready(function($){
 </script>
 
 <script>function my_submit(op){
-        //alert(op);
-        //document.getElementById("op").value = operation
         if (op == "new"){
             document.getElementById("userid").value = -1
         }
         document.getElementById("op").value = op
-        //alert("Submit")
+        //alert(op)
         $("#myform").submit()
 
 }

@@ -28,7 +28,6 @@ class userListForm(Form):
         #validators.DataRequired('id is required')])
     op = StringField('op', validators=[
         validators.DataRequired('Op is required')])
-    # print "valid"
     submit = SubmitField('Submit')
 
 class userdetailForm(Form):
