@@ -35,7 +35,8 @@ class Config:
     MAIL_USERNAME = None
     MAIL_PASSWORD = None
     MAIL_DEFAULT_SENDER = '"'+ APP_NAME + '" <noreply@example.com>'
-    MAIL_SERVER = 'smtp.vlaanderen.be'
+    # MAIL_SERVER = 'smtp.vlaanderen.be'
+    MAIL_SERVER = 'localhost'
     MAIL_PORT = 25
 
     # Flask-User settings
