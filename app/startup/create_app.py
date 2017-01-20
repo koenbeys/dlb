@@ -60,7 +60,7 @@ def create_app(config_name):
     migrate = Migrate(app, db)
     manager.add_command('db', MigrateCommand)
 
-    manager.add_command("runserver", Server(host=app.config['FLASK_SERVER_HOST'],port=app.config['FLASK_SERVER_PORT']))
+    manager.add_command("runserver", Server(host=app.config['FLASK_SERVER_HOST'],port=int(os.environ.get("PORT",app.config['FLASK_SERVER_PORT']))))
     manager.add_command("shell", Shell(make_context=make_shell_context))
 
 

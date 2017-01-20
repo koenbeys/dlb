@@ -47,9 +47,12 @@ def userList_page():
                 if (op == "edit"):
                     return redirect(url_for('user.userdetail_page', userid=userid1))
                 else:
+                    print "password update"
                     # should be page for password update
 
-                    return redirect(url_for('user.userdetail_page', userid=userid1))
+                    return redirect(url_for('user.change_password', userid=userid1))
+
+                    # return redirect(url_for('user.set_password_page', userid=userid1))
         else:
             print "Userlistform : not ok"
             userList = functions.getUserList()
@@ -57,6 +60,43 @@ def userList_page():
 
     userList = functions.getUserList()
     return render_template('userList.html', tableList=userList, alert=False)
+
+# @user.route('/set_password/<userid>', methods=['GET', 'POST'])
+# def change_password():
+#     """ Prompt for old password and new password and change the user's password."""
+#     user_manager =  current_app.user_manager
+#     db_adapter = user_manager.db_adapter
+#
+#     # Initialize form
+#     form = user_manager.change_password_form(request.form)
+#     form.next.data = request.args.get('next', _endpoint_url(user_manager.after_change_password_endpoint))  # Place ?next query param in next form field
+#
+#     # Process valid POST
+#     if request.method=='POST' and form.validate():
+#         # Hash password
+#         hashed_password = user_manager.hash_password(form.new_password.data)
+#
+#         # Change password
+#         user_manager.update_password(current_user, hashed_password)
+#
+#         # Send 'password_changed' email
+#         if user_manager.enable_email and user_manager.send_password_changed_email:
+#             emails.send_password_changed_email(current_user)
+#
+#         # Send password_changed signal
+#         signals.user_changed_password.send(current_app._get_current_object(), user=current_user)
+#
+#         # Prepare one-time system message
+#         flash(_('Your password has been changed successfully.'), 'success')
+#
+#         # Redirect to 'next' URL
+#         return redirect(form.next.data)
+#
+#     # Process GET or invalid POST
+#     return render_template(user_manager.change_password_template, form=form)
+#
+
+
 
 @user.route('/newuser', methods=['GET', 'POST'])
 def newuser_page():
