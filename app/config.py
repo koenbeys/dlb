@@ -32,11 +32,11 @@ class Config:
 #    FLASK_SERVER_PORT=80
 
     # Mail settings
-    MAIL_USERNAME = None
-    MAIL_PASSWORD = None
+    MAIL_USERNAME = "koen.beys@mow.vlaanderen.be"
+    MAIL_PASSWORD = "Zwev8550"
     MAIL_DEFAULT_SENDER = '"'+ APP_NAME + '" <noreply@example.com>'
     # MAIL_SERVER = 'smtp.vlaanderen.be'
-    MAIL_SERVER = 'localhost'
+    MAIL_SERVER = 'smtp.sendgrid.net'
     MAIL_PORT = 25
 
     # Flask-User settings
