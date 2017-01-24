@@ -32,8 +32,8 @@ class Config:
 #    FLASK_SERVER_PORT=80
 
     # Mail settings
-    MAIL_USERNAME = "koen.beys@mow.vlaanderen.be"
-    MAIL_PASSWORD = "Zwev8550"
+    MAIL_USERNAME = "dlb"
+    MAIL_PASSWORD = "Antw2000"
     MAIL_DEFAULT_SENDER = '"'+ APP_NAME + '" <noreply@example.com>'
     # MAIL_SERVER = 'smtp.vlaanderen.be'
     MAIL_SERVER = 'smtp.sendgrid.net'
