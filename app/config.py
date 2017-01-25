@@ -23,12 +23,11 @@ class Config:
     LOG_FORMATTER   = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
     # LOG_DEBUG_FORMATTER=logging.Formatter('%(asctime)s - %(levelno)s - %(name)s,%(module)s,%(lineno)d  - %(message)s')
 
-
     # Flask settings
     CSRF_ENABLED = True
-    # FLASK_SERVER_HOST = "127.0.0.1"
+    FLASK_SERVER_HOST = "127.0.0.1"
     FLASK_SERVER_PORT=5106
-    FLASK_SERVER_HOST = "0.0.0.0"
+    # FLASK_SERVER_HOST = "0.0.0.0"
 #    FLASK_SERVER_PORT=80
 
     # Mail settings
